@@ -1,0 +1,2453 @@
+Created by PLY version 3.11 (http://www.dabeaz.com/ply)
+
+Unused terminals:
+
+    CHARC
+
+Grammar
+
+Rule 0     S' -> Program
+Rule 1     Program -> ProgramHead DeclarePart ProgramBody DOT
+Rule 2     ProgramHead -> PROGRAM ProgramName
+Rule 3     ProgramName -> ID
+Rule 4     DeclarePart -> TypeDec VarDec ProcDec
+Rule 5     TypeDec -> <empty>
+Rule 6     TypeDec -> TypeDeclaration
+Rule 7     TypeDeclaration -> TYPE TypeDecList
+Rule 8     TypeDecList -> TypeId EQ TypeName SEMI TypeDecMore
+Rule 9     TypeDecMore -> <empty>
+Rule 10    TypeDecMore -> TypeDecList
+Rule 11    TypeId -> ID
+Rule 12    TypeName -> BaseType
+Rule 13    TypeName -> StructureType
+Rule 14    TypeName -> ID
+Rule 15    BaseType -> INTEGER
+Rule 16    BaseType -> CHAR
+Rule 17    StructureType -> ArrayType
+Rule 18    StructureType -> RecType
+Rule 19    ArrayType -> ARRAY LMIDPAREN INTC UNDERANGE INTC RMIDPAREN OF BaseType
+Rule 20    RecType -> RECORD FieldDecList END
+Rule 21    FieldDecList -> BaseType IdList SEMI FieldDecMore
+Rule 22    FieldDecList -> ArrayType IdList SEMI FieldDecMore
+Rule 23    FieldDecMore -> <empty>
+Rule 24    FieldDecMore -> FieldDecList
+Rule 25    IdList -> ID IdMore
+Rule 26    IdMore -> <empty>
+Rule 27    IdMore -> COMMA IdList
+Rule 28    VarDec -> <empty>
+Rule 29    VarDec -> VarDeclaration
+Rule 30    VarDeclaration -> VAR VarDecList
+Rule 31    VarDecList -> TypeName VarIdList SEMI VarDecMore
+Rule 32    VarDecMore -> <empty>
+Rule 33    VarDecMore -> VarDecList
+Rule 34    VarIdList -> ID VarIdMore
+Rule 35    VarIdMore -> <empty>
+Rule 36    VarIdMore -> COMMA VarIdList
+Rule 37    ProcDec -> <empty>
+Rule 38    ProcDec -> ProcDeclaration
+Rule 39    ProcDeclaration -> PROCEDURE ProcName LPAREN ParamList RPAREN SEMI ProcDecPart ProcBody ProcDecMore
+Rule 40    ProcDecMore -> <empty>
+Rule 41    ProcDecMore -> ProcDec
+Rule 42    ProcName -> ID
+Rule 43    ParamList -> <empty>
+Rule 44    ParamList -> ParamDecList
+Rule 45    ParamDecList -> Param ParamMore
+Rule 46    ParamMore -> <empty>
+Rule 47    ParamMore -> SEMI ParamDecList
+Rule 48    Param -> TypeName FormList
+Rule 49    Param -> VAR TypeName FormList
+Rule 50    FormList -> ID FidMore
+Rule 51    FidMore -> <empty>
+Rule 52    FidMore -> COMMA FormList
+Rule 53    ProcDecPart -> DeclarePart
+Rule 54    ProcBody -> ProgramBody
+Rule 55    ProgramBody -> BEGIN StmList END
+Rule 56    StmList -> Stm StmMore
+Rule 57    StmMore -> <empty>
+Rule 58    StmMore -> SEMI StmList
+Rule 59    Stm -> ConditionalStm
+Rule 60    Stm -> LoopStm
+Rule 61    Stm -> InputStm
+Rule 62    Stm -> OutputStm
+Rule 63    Stm -> ReturnStm
+Rule 64    Stm -> ID AssCall
+Rule 65    AssCall -> AssignmentRest
+Rule 66    AssCall -> CallStmRest
+Rule 67    AssignmentRest -> VariMore ASSIGN Exp
+Rule 68    ConditionalStm -> IF RelExp THEN StmList ELSE StmList FI
+Rule 69    LoopStm -> WHILE RelExp DO StmList ENDWH
+Rule 70    InputStm -> READ LPAREN Invar RPAREN
+Rule 71    Invar -> ID
+Rule 72    OutputStm -> WRITE LPAREN Exp RPAREN
+Rule 73    ReturnStm -> RETURN LPAREN Exp RPAREN
+Rule 74    CallStmRest -> LPAREN ActParamList RPAREN
+Rule 75    ActParamList -> <empty>
+Rule 76    ActParamList -> Exp ActParamMore
+Rule 77    ActParamMore -> <empty>
+Rule 78    ActParamMore -> COMMA ActParamList
+Rule 79    RelExp -> Exp OtherRelE
+Rule 80    OtherRelE -> CmpOp Exp
+Rule 81    Exp -> Term OtherTerm
+Rule 82    OtherTerm -> <empty>
+Rule 83    OtherTerm -> AddOp Exp
+Rule 84    Term -> Factor OtherFactor
+Rule 85    OtherFactor -> <empty>
+Rule 86    OtherFactor -> MultOp Term
+Rule 87    Factor -> LPAREN Exp RPAREN
+Rule 88    Factor -> INTC
+Rule 89    Factor -> Variable
+Rule 90    Variable -> ID VariMore
+Rule 91    VariMore -> <empty>
+Rule 92    VariMore -> LMIDPAREN Exp RMIDPAREN
+Rule 93    VariMore -> DOT FieldVar
+Rule 94    FieldVar -> ID FieldVarMore
+Rule 95    FieldVarMore -> <empty>
+Rule 96    FieldVarMore -> LMIDPAREN Exp RMIDPAREN
+Rule 97    CmpOp -> LT
+Rule 98    CmpOp -> EQ
+Rule 99    AddOp -> PLUS
+Rule 100   AddOp -> MINUS
+Rule 101   MultOp -> TIMES
+Rule 102   MultOp -> OVER
+
+Terminals, with rules where they appear
+
+ARRAY                : 19
+ASSIGN               : 67
+BEGIN                : 55
+CHAR                 : 16
+CHARC                : 
+COMMA                : 27 36 52 78
+DO                   : 69
+DOT                  : 1 93
+ELSE                 : 68
+END                  : 20 55
+ENDWH                : 69
+EQ                   : 8 98
+FI                   : 68
+ID                   : 3 11 14 25 34 42 50 64 71 90 94
+IF                   : 68
+INTC                 : 19 19 88
+INTEGER              : 15
+LMIDPAREN            : 19 92 96
+LPAREN               : 39 70 72 73 74 87
+LT                   : 97
+MINUS                : 100
+OF                   : 19
+OVER                 : 102
+PLUS                 : 99
+PROCEDURE            : 39
+PROGRAM              : 2
+READ                 : 70
+RECORD               : 20
+RETURN               : 73
+RMIDPAREN            : 19 92 96
+RPAREN               : 39 70 72 73 74 87
+SEMI                 : 8 21 22 31 39 47 58
+THEN                 : 68
+TIMES                : 101
+TYPE                 : 7
+UNDERANGE            : 19
+VAR                  : 30 49
+WHILE                : 69
+WRITE                : 72
+error                : 
+
+Nonterminals, with rules where they appear
+
+ActParamList         : 74 78
+ActParamMore         : 76
+AddOp                : 83
+ArrayType            : 17 22
+AssCall              : 64
+AssignmentRest       : 65
+BaseType             : 12 19 21
+CallStmRest          : 66
+CmpOp                : 80
+ConditionalStm       : 59
+DeclarePart          : 1 53
+Exp                  : 67 72 73 76 79 80 83 87 92 96
+Factor               : 84
+FidMore              : 50
+FieldDecList         : 20 24
+FieldDecMore         : 21 22
+FieldVar             : 93
+FieldVarMore         : 94
+FormList             : 48 49 52
+IdList               : 21 22 27
+IdMore               : 25
+InputStm             : 61
+Invar                : 70
+LoopStm              : 60
+MultOp               : 86
+OtherFactor          : 84
+OtherRelE            : 79
+OtherTerm            : 81
+OutputStm            : 62
+Param                : 45
+ParamDecList         : 44 47
+ParamList            : 39
+ParamMore            : 45
+ProcBody             : 39
+ProcDec              : 4 41
+ProcDecMore          : 39
+ProcDecPart          : 39
+ProcDeclaration      : 38
+ProcName             : 39
+Program              : 0
+ProgramBody          : 1 54
+ProgramHead          : 1
+ProgramName          : 2
+RecType              : 18
+RelExp               : 68 69
+ReturnStm            : 63
+Stm                  : 56
+StmList              : 55 58 68 68 69
+StmMore              : 56
+StructureType        : 13
+Term                 : 81 86
+TypeDec              : 4
+TypeDecList          : 7 10
+TypeDecMore          : 8
+TypeDeclaration      : 6
+TypeId               : 8
+TypeName             : 8 31 48 49
+VarDec               : 4
+VarDecList           : 30 33
+VarDecMore           : 31
+VarDeclaration       : 29
+VarIdList            : 31 36
+VarIdMore            : 34
+VariMore             : 67 90
+Variable             : 89
+
+Parsing method: LALR
+
+state 0
+
+    (0) S' -> . Program
+    (1) Program -> . ProgramHead DeclarePart ProgramBody DOT
+    (2) ProgramHead -> . PROGRAM ProgramName
+
+    PROGRAM         shift and go to state 3
+
+    Program                        shift and go to state 1
+    ProgramHead                    shift and go to state 2
+
+state 1
+
+    (0) S' -> Program .
+
+
+
+state 2
+
+    (1) Program -> ProgramHead . DeclarePart ProgramBody DOT
+    (4) DeclarePart -> . TypeDec VarDec ProcDec
+    (5) TypeDec -> .
+    (6) TypeDec -> . TypeDeclaration
+    (7) TypeDeclaration -> . TYPE TypeDecList
+
+    VAR             reduce using rule 5 (TypeDec -> .)
+    PROCEDURE       reduce using rule 5 (TypeDec -> .)
+    BEGIN           reduce using rule 5 (TypeDec -> .)
+    TYPE            shift and go to state 7
+
+    DeclarePart                    shift and go to state 4
+    TypeDec                        shift and go to state 5
+    TypeDeclaration                shift and go to state 6
+
+state 3
+
+    (2) ProgramHead -> PROGRAM . ProgramName
+    (3) ProgramName -> . ID
+
+    ID              shift and go to state 9
+
+    ProgramName                    shift and go to state 8
+
+state 4
+
+    (1) Program -> ProgramHead DeclarePart . ProgramBody DOT
+    (55) ProgramBody -> . BEGIN StmList END
+
+    BEGIN           shift and go to state 11
+
+    ProgramBody                    shift and go to state 10
+
+state 5
+
+    (4) DeclarePart -> TypeDec . VarDec ProcDec
+    (28) VarDec -> .
+    (29) VarDec -> . VarDeclaration
+    (30) VarDeclaration -> . VAR VarDecList
+
+    PROCEDURE       reduce using rule 28 (VarDec -> .)
+    BEGIN           reduce using rule 28 (VarDec -> .)
+    VAR             shift and go to state 14
+
+    VarDec                         shift and go to state 12
+    VarDeclaration                 shift and go to state 13
+
+state 6
+
+    (6) TypeDec -> TypeDeclaration .
+
+    VAR             reduce using rule 6 (TypeDec -> TypeDeclaration .)
+    PROCEDURE       reduce using rule 6 (TypeDec -> TypeDeclaration .)
+    BEGIN           reduce using rule 6 (TypeDec -> TypeDeclaration .)
+
+
+state 7
+
+    (7) TypeDeclaration -> TYPE . TypeDecList
+    (8) TypeDecList -> . TypeId EQ TypeName SEMI TypeDecMore
+    (11) TypeId -> . ID
+
+    ID              shift and go to state 17
+
+    TypeDecList                    shift and go to state 15
+    TypeId                         shift and go to state 16
+
+state 8
+
+    (2) ProgramHead -> PROGRAM ProgramName .
+
+    TYPE            reduce using rule 2 (ProgramHead -> PROGRAM ProgramName .)
+    BEGIN           reduce using rule 2 (ProgramHead -> PROGRAM ProgramName .)
+    VAR             reduce using rule 2 (ProgramHead -> PROGRAM ProgramName .)
+    PROCEDURE       reduce using rule 2 (ProgramHead -> PROGRAM ProgramName .)
+
+
+state 9
+
+    (3) ProgramName -> ID .
+
+    TYPE            reduce using rule 3 (ProgramName -> ID .)
+    BEGIN           reduce using rule 3 (ProgramName -> ID .)
+    VAR             reduce using rule 3 (ProgramName -> ID .)
+    PROCEDURE       reduce using rule 3 (ProgramName -> ID .)
+
+
+state 10
+
+    (1) Program -> ProgramHead DeclarePart ProgramBody . DOT
+
+    DOT             shift and go to state 18
+
+
+state 11
+
+    (55) ProgramBody -> BEGIN . StmList END
+    (56) StmList -> . Stm StmMore
+    (59) Stm -> . ConditionalStm
+    (60) Stm -> . LoopStm
+    (61) Stm -> . InputStm
+    (62) Stm -> . OutputStm
+    (63) Stm -> . ReturnStm
+    (64) Stm -> . ID AssCall
+    (68) ConditionalStm -> . IF RelExp THEN StmList ELSE StmList FI
+    (69) LoopStm -> . WHILE RelExp DO StmList ENDWH
+    (70) InputStm -> . READ LPAREN Invar RPAREN
+    (72) OutputStm -> . WRITE LPAREN Exp RPAREN
+    (73) ReturnStm -> . RETURN LPAREN Exp RPAREN
+
+    ID              shift and go to state 26
+    IF              shift and go to state 27
+    WHILE           shift and go to state 28
+    READ            shift and go to state 29
+    WRITE           shift and go to state 30
+    RETURN          shift and go to state 31
+
+    StmList                        shift and go to state 19
+    Stm                            shift and go to state 20
+    ConditionalStm                 shift and go to state 21
+    LoopStm                        shift and go to state 22
+    InputStm                       shift and go to state 23
+    OutputStm                      shift and go to state 24
+    ReturnStm                      shift and go to state 25
+
+state 12
+
+    (4) DeclarePart -> TypeDec VarDec . ProcDec
+    (37) ProcDec -> .
+    (38) ProcDec -> . ProcDeclaration
+    (39) ProcDeclaration -> . PROCEDURE ProcName LPAREN ParamList RPAREN SEMI ProcDecPart ProcBody ProcDecMore
+
+    BEGIN           reduce using rule 37 (ProcDec -> .)
+    PROCEDURE       shift and go to state 34
+
+    ProcDec                        shift and go to state 32
+    ProcDeclaration                shift and go to state 33
+
+state 13
+
+    (29) VarDec -> VarDeclaration .
+
+    PROCEDURE       reduce using rule 29 (VarDec -> VarDeclaration .)
+    BEGIN           reduce using rule 29 (VarDec -> VarDeclaration .)
+
+
+state 14
+
+    (30) VarDeclaration -> VAR . VarDecList
+    (31) VarDecList -> . TypeName VarIdList SEMI VarDecMore
+    (12) TypeName -> . BaseType
+    (13) TypeName -> . StructureType
+    (14) TypeName -> . ID
+    (15) BaseType -> . INTEGER
+    (16) BaseType -> . CHAR
+    (17) StructureType -> . ArrayType
+    (18) StructureType -> . RecType
+    (19) ArrayType -> . ARRAY LMIDPAREN INTC UNDERANGE INTC RMIDPAREN OF BaseType
+    (20) RecType -> . RECORD FieldDecList END
+
+    ID              shift and go to state 39
+    INTEGER         shift and go to state 40
+    CHAR            shift and go to state 41
+    ARRAY           shift and go to state 44
+    RECORD          shift and go to state 45
+
+    VarDecList                     shift and go to state 35
+    TypeName                       shift and go to state 36
+    BaseType                       shift and go to state 37
+    StructureType                  shift and go to state 38
+    ArrayType                      shift and go to state 42
+    RecType                        shift and go to state 43
+
+state 15
+
+    (7) TypeDeclaration -> TYPE TypeDecList .
+
+    VAR             reduce using rule 7 (TypeDeclaration -> TYPE TypeDecList .)
+    PROCEDURE       reduce using rule 7 (TypeDeclaration -> TYPE TypeDecList .)
+    BEGIN           reduce using rule 7 (TypeDeclaration -> TYPE TypeDecList .)
+
+
+state 16
+
+    (8) TypeDecList -> TypeId . EQ TypeName SEMI TypeDecMore
+
+    EQ              shift and go to state 46
+
+
+state 17
+
+    (11) TypeId -> ID .
+
+    EQ              reduce using rule 11 (TypeId -> ID .)
+
+
+state 18
+
+    (1) Program -> ProgramHead DeclarePart ProgramBody DOT .
+
+    $end            reduce using rule 1 (Program -> ProgramHead DeclarePart ProgramBody DOT .)
+
+
+state 19
+
+    (55) ProgramBody -> BEGIN StmList . END
+
+    END             shift and go to state 47
+
+
+state 20
+
+    (56) StmList -> Stm . StmMore
+    (57) StmMore -> .
+    (58) StmMore -> . SEMI StmList
+
+    END             reduce using rule 57 (StmMore -> .)
+    ELSE            reduce using rule 57 (StmMore -> .)
+    ENDWH           reduce using rule 57 (StmMore -> .)
+    FI              reduce using rule 57 (StmMore -> .)
+    SEMI            shift and go to state 49
+
+    StmMore                        shift and go to state 48
+
+state 21
+
+    (59) Stm -> ConditionalStm .
+
+    SEMI            reduce using rule 59 (Stm -> ConditionalStm .)
+    END             reduce using rule 59 (Stm -> ConditionalStm .)
+    ELSE            reduce using rule 59 (Stm -> ConditionalStm .)
+    ENDWH           reduce using rule 59 (Stm -> ConditionalStm .)
+    FI              reduce using rule 59 (Stm -> ConditionalStm .)
+
+
+state 22
+
+    (60) Stm -> LoopStm .
+
+    SEMI            reduce using rule 60 (Stm -> LoopStm .)
+    END             reduce using rule 60 (Stm -> LoopStm .)
+    ELSE            reduce using rule 60 (Stm -> LoopStm .)
+    ENDWH           reduce using rule 60 (Stm -> LoopStm .)
+    FI              reduce using rule 60 (Stm -> LoopStm .)
+
+
+state 23
+
+    (61) Stm -> InputStm .
+
+    SEMI            reduce using rule 61 (Stm -> InputStm .)
+    END             reduce using rule 61 (Stm -> InputStm .)
+    ELSE            reduce using rule 61 (Stm -> InputStm .)
+    ENDWH           reduce using rule 61 (Stm -> InputStm .)
+    FI              reduce using rule 61 (Stm -> InputStm .)
+
+
+state 24
+
+    (62) Stm -> OutputStm .
+
+    SEMI            reduce using rule 62 (Stm -> OutputStm .)
+    END             reduce using rule 62 (Stm -> OutputStm .)
+    ELSE            reduce using rule 62 (Stm -> OutputStm .)
+    ENDWH           reduce using rule 62 (Stm -> OutputStm .)
+    FI              reduce using rule 62 (Stm -> OutputStm .)
+
+
+state 25
+
+    (63) Stm -> ReturnStm .
+
+    SEMI            reduce using rule 63 (Stm -> ReturnStm .)
+    END             reduce using rule 63 (Stm -> ReturnStm .)
+    ELSE            reduce using rule 63 (Stm -> ReturnStm .)
+    ENDWH           reduce using rule 63 (Stm -> ReturnStm .)
+    FI              reduce using rule 63 (Stm -> ReturnStm .)
+
+
+state 26
+
+    (64) Stm -> ID . AssCall
+    (65) AssCall -> . AssignmentRest
+    (66) AssCall -> . CallStmRest
+    (67) AssignmentRest -> . VariMore ASSIGN Exp
+    (74) CallStmRest -> . LPAREN ActParamList RPAREN
+    (91) VariMore -> .
+    (92) VariMore -> . LMIDPAREN Exp RMIDPAREN
+    (93) VariMore -> . DOT FieldVar
+
+    LPAREN          shift and go to state 54
+    ASSIGN          reduce using rule 91 (VariMore -> .)
+    LMIDPAREN       shift and go to state 55
+    DOT             shift and go to state 56
+
+    AssCall                        shift and go to state 50
+    AssignmentRest                 shift and go to state 51
+    CallStmRest                    shift and go to state 52
+    VariMore                       shift and go to state 53
+
+state 27
+
+    (68) ConditionalStm -> IF . RelExp THEN StmList ELSE StmList FI
+    (79) RelExp -> . Exp OtherRelE
+    (81) Exp -> . Term OtherTerm
+    (84) Term -> . Factor OtherFactor
+    (87) Factor -> . LPAREN Exp RPAREN
+    (88) Factor -> . INTC
+    (89) Factor -> . Variable
+    (90) Variable -> . ID VariMore
+
+    LPAREN          shift and go to state 61
+    INTC            shift and go to state 62
+    ID              shift and go to state 64
+
+    RelExp                         shift and go to state 57
+    Exp                            shift and go to state 58
+    Term                           shift and go to state 59
+    Factor                         shift and go to state 60
+    Variable                       shift and go to state 63
+
+state 28
+
+    (69) LoopStm -> WHILE . RelExp DO StmList ENDWH
+    (79) RelExp -> . Exp OtherRelE
+    (81) Exp -> . Term OtherTerm
+    (84) Term -> . Factor OtherFactor
+    (87) Factor -> . LPAREN Exp RPAREN
+    (88) Factor -> . INTC
+    (89) Factor -> . Variable
+    (90) Variable -> . ID VariMore
+
+    LPAREN          shift and go to state 61
+    INTC            shift and go to state 62
+    ID              shift and go to state 64
+
+    RelExp                         shift and go to state 65
+    Exp                            shift and go to state 58
+    Term                           shift and go to state 59
+    Factor                         shift and go to state 60
+    Variable                       shift and go to state 63
+
+state 29
+
+    (70) InputStm -> READ . LPAREN Invar RPAREN
+
+    LPAREN          shift and go to state 66
+
+
+state 30
+
+    (72) OutputStm -> WRITE . LPAREN Exp RPAREN
+
+    LPAREN          shift and go to state 67
+
+
+state 31
+
+    (73) ReturnStm -> RETURN . LPAREN Exp RPAREN
+
+    LPAREN          shift and go to state 68
+
+
+state 32
+
+    (4) DeclarePart -> TypeDec VarDec ProcDec .
+
+    BEGIN           reduce using rule 4 (DeclarePart -> TypeDec VarDec ProcDec .)
+
+
+state 33
+
+    (38) ProcDec -> ProcDeclaration .
+
+    BEGIN           reduce using rule 38 (ProcDec -> ProcDeclaration .)
+
+
+state 34
+
+    (39) ProcDeclaration -> PROCEDURE . ProcName LPAREN ParamList RPAREN SEMI ProcDecPart ProcBody ProcDecMore
+    (42) ProcName -> . ID
+
+    ID              shift and go to state 70
+
+    ProcName                       shift and go to state 69
+
+state 35
+
+    (30) VarDeclaration -> VAR VarDecList .
+
+    PROCEDURE       reduce using rule 30 (VarDeclaration -> VAR VarDecList .)
+    BEGIN           reduce using rule 30 (VarDeclaration -> VAR VarDecList .)
+
+
+state 36
+
+    (31) VarDecList -> TypeName . VarIdList SEMI VarDecMore
+    (34) VarIdList -> . ID VarIdMore
+
+    ID              shift and go to state 72
+
+    VarIdList                      shift and go to state 71
+
+state 37
+
+    (12) TypeName -> BaseType .
+
+    ID              reduce using rule 12 (TypeName -> BaseType .)
+    SEMI            reduce using rule 12 (TypeName -> BaseType .)
+
+
+state 38
+
+    (13) TypeName -> StructureType .
+
+    ID              reduce using rule 13 (TypeName -> StructureType .)
+    SEMI            reduce using rule 13 (TypeName -> StructureType .)
+
+
+state 39
+
+    (14) TypeName -> ID .
+
+    ID              reduce using rule 14 (TypeName -> ID .)
+    SEMI            reduce using rule 14 (TypeName -> ID .)
+
+
+state 40
+
+    (15) BaseType -> INTEGER .
+
+    ID              reduce using rule 15 (BaseType -> INTEGER .)
+    SEMI            reduce using rule 15 (BaseType -> INTEGER .)
+
+
+state 41
+
+    (16) BaseType -> CHAR .
+
+    ID              reduce using rule 16 (BaseType -> CHAR .)
+    SEMI            reduce using rule 16 (BaseType -> CHAR .)
+
+
+state 42
+
+    (17) StructureType -> ArrayType .
+
+    ID              reduce using rule 17 (StructureType -> ArrayType .)
+    SEMI            reduce using rule 17 (StructureType -> ArrayType .)
+
+
+state 43
+
+    (18) StructureType -> RecType .
+
+    ID              reduce using rule 18 (StructureType -> RecType .)
+    SEMI            reduce using rule 18 (StructureType -> RecType .)
+
+
+state 44
+
+    (19) ArrayType -> ARRAY . LMIDPAREN INTC UNDERANGE INTC RMIDPAREN OF BaseType
+
+    LMIDPAREN       shift and go to state 73
+
+
+state 45
+
+    (20) RecType -> RECORD . FieldDecList END
+    (21) FieldDecList -> . BaseType IdList SEMI FieldDecMore
+    (22) FieldDecList -> . ArrayType IdList SEMI FieldDecMore
+    (15) BaseType -> . INTEGER
+    (16) BaseType -> . CHAR
+    (19) ArrayType -> . ARRAY LMIDPAREN INTC UNDERANGE INTC RMIDPAREN OF BaseType
+
+    INTEGER         shift and go to state 40
+    CHAR            shift and go to state 41
+    ARRAY           shift and go to state 44
+
+    FieldDecList                   shift and go to state 74
+    BaseType                       shift and go to state 75
+    ArrayType                      shift and go to state 76
+
+state 46
+
+    (8) TypeDecList -> TypeId EQ . TypeName SEMI TypeDecMore
+    (12) TypeName -> . BaseType
+    (13) TypeName -> . StructureType
+    (14) TypeName -> . ID
+    (15) BaseType -> . INTEGER
+    (16) BaseType -> . CHAR
+    (17) StructureType -> . ArrayType
+    (18) StructureType -> . RecType
+    (19) ArrayType -> . ARRAY LMIDPAREN INTC UNDERANGE INTC RMIDPAREN OF BaseType
+    (20) RecType -> . RECORD FieldDecList END
+
+    ID              shift and go to state 39
+    INTEGER         shift and go to state 40
+    CHAR            shift and go to state 41
+    ARRAY           shift and go to state 44
+    RECORD          shift and go to state 45
+
+    TypeName                       shift and go to state 77
+    BaseType                       shift and go to state 37
+    StructureType                  shift and go to state 38
+    ArrayType                      shift and go to state 42
+    RecType                        shift and go to state 43
+
+state 47
+
+    (55) ProgramBody -> BEGIN StmList END .
+
+    DOT             reduce using rule 55 (ProgramBody -> BEGIN StmList END .)
+    PROCEDURE       reduce using rule 55 (ProgramBody -> BEGIN StmList END .)
+    BEGIN           reduce using rule 55 (ProgramBody -> BEGIN StmList END .)
+
+
+state 48
+
+    (56) StmList -> Stm StmMore .
+
+    END             reduce using rule 56 (StmList -> Stm StmMore .)
+    ELSE            reduce using rule 56 (StmList -> Stm StmMore .)
+    ENDWH           reduce using rule 56 (StmList -> Stm StmMore .)
+    FI              reduce using rule 56 (StmList -> Stm StmMore .)
+
+
+state 49
+
+    (58) StmMore -> SEMI . StmList
+    (56) StmList -> . Stm StmMore
+    (59) Stm -> . ConditionalStm
+    (60) Stm -> . LoopStm
+    (61) Stm -> . InputStm
+    (62) Stm -> . OutputStm
+    (63) Stm -> . ReturnStm
+    (64) Stm -> . ID AssCall
+    (68) ConditionalStm -> . IF RelExp THEN StmList ELSE StmList FI
+    (69) LoopStm -> . WHILE RelExp DO StmList ENDWH
+    (70) InputStm -> . READ LPAREN Invar RPAREN
+    (72) OutputStm -> . WRITE LPAREN Exp RPAREN
+    (73) ReturnStm -> . RETURN LPAREN Exp RPAREN
+
+    ID              shift and go to state 26
+    IF              shift and go to state 27
+    WHILE           shift and go to state 28
+    READ            shift and go to state 29
+    WRITE           shift and go to state 30
+    RETURN          shift and go to state 31
+
+    StmList                        shift and go to state 78
+    Stm                            shift and go to state 20
+    ConditionalStm                 shift and go to state 21
+    LoopStm                        shift and go to state 22
+    InputStm                       shift and go to state 23
+    OutputStm                      shift and go to state 24
+    ReturnStm                      shift and go to state 25
+
+state 50
+
+    (64) Stm -> ID AssCall .
+
+    SEMI            reduce using rule 64 (Stm -> ID AssCall .)
+    END             reduce using rule 64 (Stm -> ID AssCall .)
+    ELSE            reduce using rule 64 (Stm -> ID AssCall .)
+    ENDWH           reduce using rule 64 (Stm -> ID AssCall .)
+    FI              reduce using rule 64 (Stm -> ID AssCall .)
+
+
+state 51
+
+    (65) AssCall -> AssignmentRest .
+
+    SEMI            reduce using rule 65 (AssCall -> AssignmentRest .)
+    END             reduce using rule 65 (AssCall -> AssignmentRest .)
+    ELSE            reduce using rule 65 (AssCall -> AssignmentRest .)
+    ENDWH           reduce using rule 65 (AssCall -> AssignmentRest .)
+    FI              reduce using rule 65 (AssCall -> AssignmentRest .)
+
+
+state 52
+
+    (66) AssCall -> CallStmRest .
+
+    SEMI            reduce using rule 66 (AssCall -> CallStmRest .)
+    END             reduce using rule 66 (AssCall -> CallStmRest .)
+    ELSE            reduce using rule 66 (AssCall -> CallStmRest .)
+    ENDWH           reduce using rule 66 (AssCall -> CallStmRest .)
+    FI              reduce using rule 66 (AssCall -> CallStmRest .)
+
+
+state 53
+
+    (67) AssignmentRest -> VariMore . ASSIGN Exp
+
+    ASSIGN          shift and go to state 79
+
+
+state 54
+
+    (74) CallStmRest -> LPAREN . ActParamList RPAREN
+    (75) ActParamList -> .
+    (76) ActParamList -> . Exp ActParamMore
+    (81) Exp -> . Term OtherTerm
+    (84) Term -> . Factor OtherFactor
+    (87) Factor -> . LPAREN Exp RPAREN
+    (88) Factor -> . INTC
+    (89) Factor -> . Variable
+    (90) Variable -> . ID VariMore
+
+    RPAREN          reduce using rule 75 (ActParamList -> .)
+    LPAREN          shift and go to state 61
+    INTC            shift and go to state 62
+    ID              shift and go to state 64
+
+    ActParamList                   shift and go to state 80
+    Exp                            shift and go to state 81
+    Term                           shift and go to state 59
+    Factor                         shift and go to state 60
+    Variable                       shift and go to state 63
+
+state 55
+
+    (92) VariMore -> LMIDPAREN . Exp RMIDPAREN
+    (81) Exp -> . Term OtherTerm
+    (84) Term -> . Factor OtherFactor
+    (87) Factor -> . LPAREN Exp RPAREN
+    (88) Factor -> . INTC
+    (89) Factor -> . Variable
+    (90) Variable -> . ID VariMore
+
+    LPAREN          shift and go to state 61
+    INTC            shift and go to state 62
+    ID              shift and go to state 64
+
+    Exp                            shift and go to state 82
+    Term                           shift and go to state 59
+    Factor                         shift and go to state 60
+    Variable                       shift and go to state 63
+
+state 56
+
+    (93) VariMore -> DOT . FieldVar
+    (94) FieldVar -> . ID FieldVarMore
+
+    ID              shift and go to state 84
+
+    FieldVar                       shift and go to state 83
+
+state 57
+
+    (68) ConditionalStm -> IF RelExp . THEN StmList ELSE StmList FI
+
+    THEN            shift and go to state 85
+
+
+state 58
+
+    (79) RelExp -> Exp . OtherRelE
+    (80) OtherRelE -> . CmpOp Exp
+    (97) CmpOp -> . LT
+    (98) CmpOp -> . EQ
+
+    LT              shift and go to state 88
+    EQ              shift and go to state 89
+
+    OtherRelE                      shift and go to state 86
+    CmpOp                          shift and go to state 87
+
+state 59
+
+    (81) Exp -> Term . OtherTerm
+    (82) OtherTerm -> .
+    (83) OtherTerm -> . AddOp Exp
+    (99) AddOp -> . PLUS
+    (100) AddOp -> . MINUS
+
+    LT              reduce using rule 82 (OtherTerm -> .)
+    EQ              reduce using rule 82 (OtherTerm -> .)
+    COMMA           reduce using rule 82 (OtherTerm -> .)
+    RPAREN          reduce using rule 82 (OtherTerm -> .)
+    RMIDPAREN       reduce using rule 82 (OtherTerm -> .)
+    SEMI            reduce using rule 82 (OtherTerm -> .)
+    END             reduce using rule 82 (OtherTerm -> .)
+    ELSE            reduce using rule 82 (OtherTerm -> .)
+    ENDWH           reduce using rule 82 (OtherTerm -> .)
+    FI              reduce using rule 82 (OtherTerm -> .)
+    THEN            reduce using rule 82 (OtherTerm -> .)
+    DO              reduce using rule 82 (OtherTerm -> .)
+    PLUS            shift and go to state 92
+    MINUS           shift and go to state 93
+
+    OtherTerm                      shift and go to state 90
+    AddOp                          shift and go to state 91
+
+state 60
+
+    (84) Term -> Factor . OtherFactor
+    (85) OtherFactor -> .
+    (86) OtherFactor -> . MultOp Term
+    (101) MultOp -> . TIMES
+    (102) MultOp -> . OVER
+
+    PLUS            reduce using rule 85 (OtherFactor -> .)
+    MINUS           reduce using rule 85 (OtherFactor -> .)
+    LT              reduce using rule 85 (OtherFactor -> .)
+    EQ              reduce using rule 85 (OtherFactor -> .)
+    COMMA           reduce using rule 85 (OtherFactor -> .)
+    RPAREN          reduce using rule 85 (OtherFactor -> .)
+    RMIDPAREN       reduce using rule 85 (OtherFactor -> .)
+    SEMI            reduce using rule 85 (OtherFactor -> .)
+    END             reduce using rule 85 (OtherFactor -> .)
+    ELSE            reduce using rule 85 (OtherFactor -> .)
+    ENDWH           reduce using rule 85 (OtherFactor -> .)
+    FI              reduce using rule 85 (OtherFactor -> .)
+    THEN            reduce using rule 85 (OtherFactor -> .)
+    DO              reduce using rule 85 (OtherFactor -> .)
+    TIMES           shift and go to state 96
+    OVER            shift and go to state 97
+
+    OtherFactor                    shift and go to state 94
+    MultOp                         shift and go to state 95
+
+state 61
+
+    (87) Factor -> LPAREN . Exp RPAREN
+    (81) Exp -> . Term OtherTerm
+    (84) Term -> . Factor OtherFactor
+    (87) Factor -> . LPAREN Exp RPAREN
+    (88) Factor -> . INTC
+    (89) Factor -> . Variable
+    (90) Variable -> . ID VariMore
+
+    LPAREN          shift and go to state 61
+    INTC            shift and go to state 62
+    ID              shift and go to state 64
+
+    Exp                            shift and go to state 98
+    Term                           shift and go to state 59
+    Factor                         shift and go to state 60
+    Variable                       shift and go to state 63
+
+state 62
+
+    (88) Factor -> INTC .
+
+    TIMES           reduce using rule 88 (Factor -> INTC .)
+    OVER            reduce using rule 88 (Factor -> INTC .)
+    PLUS            reduce using rule 88 (Factor -> INTC .)
+    MINUS           reduce using rule 88 (Factor -> INTC .)
+    LT              reduce using rule 88 (Factor -> INTC .)
+    EQ              reduce using rule 88 (Factor -> INTC .)
+    COMMA           reduce using rule 88 (Factor -> INTC .)
+    RPAREN          reduce using rule 88 (Factor -> INTC .)
+    RMIDPAREN       reduce using rule 88 (Factor -> INTC .)
+    SEMI            reduce using rule 88 (Factor -> INTC .)
+    END             reduce using rule 88 (Factor -> INTC .)
+    ELSE            reduce using rule 88 (Factor -> INTC .)
+    ENDWH           reduce using rule 88 (Factor -> INTC .)
+    FI              reduce using rule 88 (Factor -> INTC .)
+    THEN            reduce using rule 88 (Factor -> INTC .)
+    DO              reduce using rule 88 (Factor -> INTC .)
+
+
+state 63
+
+    (89) Factor -> Variable .
+
+    TIMES           reduce using rule 89 (Factor -> Variable .)
+    OVER            reduce using rule 89 (Factor -> Variable .)
+    PLUS            reduce using rule 89 (Factor -> Variable .)
+    MINUS           reduce using rule 89 (Factor -> Variable .)
+    LT              reduce using rule 89 (Factor -> Variable .)
+    EQ              reduce using rule 89 (Factor -> Variable .)
+    COMMA           reduce using rule 89 (Factor -> Variable .)
+    RPAREN          reduce using rule 89 (Factor -> Variable .)
+    RMIDPAREN       reduce using rule 89 (Factor -> Variable .)
+    SEMI            reduce using rule 89 (Factor -> Variable .)
+    END             reduce using rule 89 (Factor -> Variable .)
+    ELSE            reduce using rule 89 (Factor -> Variable .)
+    ENDWH           reduce using rule 89 (Factor -> Variable .)
+    FI              reduce using rule 89 (Factor -> Variable .)
+    THEN            reduce using rule 89 (Factor -> Variable .)
+    DO              reduce using rule 89 (Factor -> Variable .)
+
+
+state 64
+
+    (90) Variable -> ID . VariMore
+    (91) VariMore -> .
+    (92) VariMore -> . LMIDPAREN Exp RMIDPAREN
+    (93) VariMore -> . DOT FieldVar
+
+    TIMES           reduce using rule 91 (VariMore -> .)
+    OVER            reduce using rule 91 (VariMore -> .)
+    PLUS            reduce using rule 91 (VariMore -> .)
+    MINUS           reduce using rule 91 (VariMore -> .)
+    LT              reduce using rule 91 (VariMore -> .)
+    EQ              reduce using rule 91 (VariMore -> .)
+    COMMA           reduce using rule 91 (VariMore -> .)
+    RPAREN          reduce using rule 91 (VariMore -> .)
+    RMIDPAREN       reduce using rule 91 (VariMore -> .)
+    SEMI            reduce using rule 91 (VariMore -> .)
+    END             reduce using rule 91 (VariMore -> .)
+    ELSE            reduce using rule 91 (VariMore -> .)
+    ENDWH           reduce using rule 91 (VariMore -> .)
+    FI              reduce using rule 91 (VariMore -> .)
+    THEN            reduce using rule 91 (VariMore -> .)
+    DO              reduce using rule 91 (VariMore -> .)
+    LMIDPAREN       shift and go to state 55
+    DOT             shift and go to state 56
+
+    VariMore                       shift and go to state 99
+
+state 65
+
+    (69) LoopStm -> WHILE RelExp . DO StmList ENDWH
+
+    DO              shift and go to state 100
+
+
+state 66
+
+    (70) InputStm -> READ LPAREN . Invar RPAREN
+    (71) Invar -> . ID
+
+    ID              shift and go to state 102
+
+    Invar                          shift and go to state 101
+
+state 67
+
+    (72) OutputStm -> WRITE LPAREN . Exp RPAREN
+    (81) Exp -> . Term OtherTerm
+    (84) Term -> . Factor OtherFactor
+    (87) Factor -> . LPAREN Exp RPAREN
+    (88) Factor -> . INTC
+    (89) Factor -> . Variable
+    (90) Variable -> . ID VariMore
+
+    LPAREN          shift and go to state 61
+    INTC            shift and go to state 62
+    ID              shift and go to state 64
+
+    Exp                            shift and go to state 103
+    Term                           shift and go to state 59
+    Factor                         shift and go to state 60
+    Variable                       shift and go to state 63
+
+state 68
+
+    (73) ReturnStm -> RETURN LPAREN . Exp RPAREN
+    (81) Exp -> . Term OtherTerm
+    (84) Term -> . Factor OtherFactor
+    (87) Factor -> . LPAREN Exp RPAREN
+    (88) Factor -> . INTC
+    (89) Factor -> . Variable
+    (90) Variable -> . ID VariMore
+
+    LPAREN          shift and go to state 61
+    INTC            shift and go to state 62
+    ID              shift and go to state 64
+
+    Exp                            shift and go to state 104
+    Term                           shift and go to state 59
+    Factor                         shift and go to state 60
+    Variable                       shift and go to state 63
+
+state 69
+
+    (39) ProcDeclaration -> PROCEDURE ProcName . LPAREN ParamList RPAREN SEMI ProcDecPart ProcBody ProcDecMore
+
+    LPAREN          shift and go to state 105
+
+
+state 70
+
+    (42) ProcName -> ID .
+
+    LPAREN          reduce using rule 42 (ProcName -> ID .)
+
+
+state 71
+
+    (31) VarDecList -> TypeName VarIdList . SEMI VarDecMore
+
+    SEMI            shift and go to state 106
+
+
+state 72
+
+    (34) VarIdList -> ID . VarIdMore
+    (35) VarIdMore -> .
+    (36) VarIdMore -> . COMMA VarIdList
+
+    SEMI            reduce using rule 35 (VarIdMore -> .)
+    COMMA           shift and go to state 108
+
+    VarIdMore                      shift and go to state 107
+
+state 73
+
+    (19) ArrayType -> ARRAY LMIDPAREN . INTC UNDERANGE INTC RMIDPAREN OF BaseType
+
+    INTC            shift and go to state 109
+
+
+state 74
+
+    (20) RecType -> RECORD FieldDecList . END
+
+    END             shift and go to state 110
+
+
+state 75
+
+    (21) FieldDecList -> BaseType . IdList SEMI FieldDecMore
+    (25) IdList -> . ID IdMore
+
+    ID              shift and go to state 112
+
+    IdList                         shift and go to state 111
+
+state 76
+
+    (22) FieldDecList -> ArrayType . IdList SEMI FieldDecMore
+    (25) IdList -> . ID IdMore
+
+    ID              shift and go to state 112
+
+    IdList                         shift and go to state 113
+
+state 77
+
+    (8) TypeDecList -> TypeId EQ TypeName . SEMI TypeDecMore
+
+    SEMI            shift and go to state 114
+
+
+state 78
+
+    (58) StmMore -> SEMI StmList .
+
+    END             reduce using rule 58 (StmMore -> SEMI StmList .)
+    ELSE            reduce using rule 58 (StmMore -> SEMI StmList .)
+    ENDWH           reduce using rule 58 (StmMore -> SEMI StmList .)
+    FI              reduce using rule 58 (StmMore -> SEMI StmList .)
+
+
+state 79
+
+    (67) AssignmentRest -> VariMore ASSIGN . Exp
+    (81) Exp -> . Term OtherTerm
+    (84) Term -> . Factor OtherFactor
+    (87) Factor -> . LPAREN Exp RPAREN
+    (88) Factor -> . INTC
+    (89) Factor -> . Variable
+    (90) Variable -> . ID VariMore
+
+    LPAREN          shift and go to state 61
+    INTC            shift and go to state 62
+    ID              shift and go to state 64
+
+    Exp                            shift and go to state 115
+    Term                           shift and go to state 59
+    Factor                         shift and go to state 60
+    Variable                       shift and go to state 63
+
+state 80
+
+    (74) CallStmRest -> LPAREN ActParamList . RPAREN
+
+    RPAREN          shift and go to state 116
+
+
+state 81
+
+    (76) ActParamList -> Exp . ActParamMore
+    (77) ActParamMore -> .
+    (78) ActParamMore -> . COMMA ActParamList
+
+    RPAREN          reduce using rule 77 (ActParamMore -> .)
+    COMMA           shift and go to state 118
+
+    ActParamMore                   shift and go to state 117
+
+state 82
+
+    (92) VariMore -> LMIDPAREN Exp . RMIDPAREN
+
+    RMIDPAREN       shift and go to state 119
+
+
+state 83
+
+    (93) VariMore -> DOT FieldVar .
+
+    ASSIGN          reduce using rule 93 (VariMore -> DOT FieldVar .)
+    TIMES           reduce using rule 93 (VariMore -> DOT FieldVar .)
+    OVER            reduce using rule 93 (VariMore -> DOT FieldVar .)
+    PLUS            reduce using rule 93 (VariMore -> DOT FieldVar .)
+    MINUS           reduce using rule 93 (VariMore -> DOT FieldVar .)
+    LT              reduce using rule 93 (VariMore -> DOT FieldVar .)
+    EQ              reduce using rule 93 (VariMore -> DOT FieldVar .)
+    COMMA           reduce using rule 93 (VariMore -> DOT FieldVar .)
+    RPAREN          reduce using rule 93 (VariMore -> DOT FieldVar .)
+    RMIDPAREN       reduce using rule 93 (VariMore -> DOT FieldVar .)
+    SEMI            reduce using rule 93 (VariMore -> DOT FieldVar .)
+    END             reduce using rule 93 (VariMore -> DOT FieldVar .)
+    ELSE            reduce using rule 93 (VariMore -> DOT FieldVar .)
+    ENDWH           reduce using rule 93 (VariMore -> DOT FieldVar .)
+    FI              reduce using rule 93 (VariMore -> DOT FieldVar .)
+    THEN            reduce using rule 93 (VariMore -> DOT FieldVar .)
+    DO              reduce using rule 93 (VariMore -> DOT FieldVar .)
+
+
+state 84
+
+    (94) FieldVar -> ID . FieldVarMore
+    (95) FieldVarMore -> .
+    (96) FieldVarMore -> . LMIDPAREN Exp RMIDPAREN
+
+    ASSIGN          reduce using rule 95 (FieldVarMore -> .)
+    TIMES           reduce using rule 95 (FieldVarMore -> .)
+    OVER            reduce using rule 95 (FieldVarMore -> .)
+    PLUS            reduce using rule 95 (FieldVarMore -> .)
+    MINUS           reduce using rule 95 (FieldVarMore -> .)
+    LT              reduce using rule 95 (FieldVarMore -> .)
+    EQ              reduce using rule 95 (FieldVarMore -> .)
+    COMMA           reduce using rule 95 (FieldVarMore -> .)
+    RPAREN          reduce using rule 95 (FieldVarMore -> .)
+    RMIDPAREN       reduce using rule 95 (FieldVarMore -> .)
+    SEMI            reduce using rule 95 (FieldVarMore -> .)
+    END             reduce using rule 95 (FieldVarMore -> .)
+    ELSE            reduce using rule 95 (FieldVarMore -> .)
+    ENDWH           reduce using rule 95 (FieldVarMore -> .)
+    FI              reduce using rule 95 (FieldVarMore -> .)
+    THEN            reduce using rule 95 (FieldVarMore -> .)
+    DO              reduce using rule 95 (FieldVarMore -> .)
+    LMIDPAREN       shift and go to state 121
+
+    FieldVarMore                   shift and go to state 120
+
+state 85
+
+    (68) ConditionalStm -> IF RelExp THEN . StmList ELSE StmList FI
+    (56) StmList -> . Stm StmMore
+    (59) Stm -> . ConditionalStm
+    (60) Stm -> . LoopStm
+    (61) Stm -> . InputStm
+    (62) Stm -> . OutputStm
+    (63) Stm -> . ReturnStm
+    (64) Stm -> . ID AssCall
+    (68) ConditionalStm -> . IF RelExp THEN StmList ELSE StmList FI
+    (69) LoopStm -> . WHILE RelExp DO StmList ENDWH
+    (70) InputStm -> . READ LPAREN Invar RPAREN
+    (72) OutputStm -> . WRITE LPAREN Exp RPAREN
+    (73) ReturnStm -> . RETURN LPAREN Exp RPAREN
+
+    ID              shift and go to state 26
+    IF              shift and go to state 27
+    WHILE           shift and go to state 28
+    READ            shift and go to state 29
+    WRITE           shift and go to state 30
+    RETURN          shift and go to state 31
+
+    StmList                        shift and go to state 122
+    Stm                            shift and go to state 20
+    ConditionalStm                 shift and go to state 21
+    LoopStm                        shift and go to state 22
+    InputStm                       shift and go to state 23
+    OutputStm                      shift and go to state 24
+    ReturnStm                      shift and go to state 25
+
+state 86
+
+    (79) RelExp -> Exp OtherRelE .
+
+    THEN            reduce using rule 79 (RelExp -> Exp OtherRelE .)
+    DO              reduce using rule 79 (RelExp -> Exp OtherRelE .)
+
+
+state 87
+
+    (80) OtherRelE -> CmpOp . Exp
+    (81) Exp -> . Term OtherTerm
+    (84) Term -> . Factor OtherFactor
+    (87) Factor -> . LPAREN Exp RPAREN
+    (88) Factor -> . INTC
+    (89) Factor -> . Variable
+    (90) Variable -> . ID VariMore
+
+    LPAREN          shift and go to state 61
+    INTC            shift and go to state 62
+    ID              shift and go to state 64
+
+    Exp                            shift and go to state 123
+    Term                           shift and go to state 59
+    Factor                         shift and go to state 60
+    Variable                       shift and go to state 63
+
+state 88
+
+    (97) CmpOp -> LT .
+
+    LPAREN          reduce using rule 97 (CmpOp -> LT .)
+    INTC            reduce using rule 97 (CmpOp -> LT .)
+    ID              reduce using rule 97 (CmpOp -> LT .)
+
+
+state 89
+
+    (98) CmpOp -> EQ .
+
+    LPAREN          reduce using rule 98 (CmpOp -> EQ .)
+    INTC            reduce using rule 98 (CmpOp -> EQ .)
+    ID              reduce using rule 98 (CmpOp -> EQ .)
+
+
+state 90
+
+    (81) Exp -> Term OtherTerm .
+
+    LT              reduce using rule 81 (Exp -> Term OtherTerm .)
+    EQ              reduce using rule 81 (Exp -> Term OtherTerm .)
+    COMMA           reduce using rule 81 (Exp -> Term OtherTerm .)
+    RPAREN          reduce using rule 81 (Exp -> Term OtherTerm .)
+    RMIDPAREN       reduce using rule 81 (Exp -> Term OtherTerm .)
+    SEMI            reduce using rule 81 (Exp -> Term OtherTerm .)
+    END             reduce using rule 81 (Exp -> Term OtherTerm .)
+    ELSE            reduce using rule 81 (Exp -> Term OtherTerm .)
+    ENDWH           reduce using rule 81 (Exp -> Term OtherTerm .)
+    FI              reduce using rule 81 (Exp -> Term OtherTerm .)
+    THEN            reduce using rule 81 (Exp -> Term OtherTerm .)
+    DO              reduce using rule 81 (Exp -> Term OtherTerm .)
+
+
+state 91
+
+    (83) OtherTerm -> AddOp . Exp
+    (81) Exp -> . Term OtherTerm
+    (84) Term -> . Factor OtherFactor
+    (87) Factor -> . LPAREN Exp RPAREN
+    (88) Factor -> . INTC
+    (89) Factor -> . Variable
+    (90) Variable -> . ID VariMore
+
+    LPAREN          shift and go to state 61
+    INTC            shift and go to state 62
+    ID              shift and go to state 64
+
+    Exp                            shift and go to state 124
+    Term                           shift and go to state 59
+    Factor                         shift and go to state 60
+    Variable                       shift and go to state 63
+
+state 92
+
+    (99) AddOp -> PLUS .
+
+    LPAREN          reduce using rule 99 (AddOp -> PLUS .)
+    INTC            reduce using rule 99 (AddOp -> PLUS .)
+    ID              reduce using rule 99 (AddOp -> PLUS .)
+
+
+state 93
+
+    (100) AddOp -> MINUS .
+
+    LPAREN          reduce using rule 100 (AddOp -> MINUS .)
+    INTC            reduce using rule 100 (AddOp -> MINUS .)
+    ID              reduce using rule 100 (AddOp -> MINUS .)
+
+
+state 94
+
+    (84) Term -> Factor OtherFactor .
+
+    PLUS            reduce using rule 84 (Term -> Factor OtherFactor .)
+    MINUS           reduce using rule 84 (Term -> Factor OtherFactor .)
+    LT              reduce using rule 84 (Term -> Factor OtherFactor .)
+    EQ              reduce using rule 84 (Term -> Factor OtherFactor .)
+    COMMA           reduce using rule 84 (Term -> Factor OtherFactor .)
+    RPAREN          reduce using rule 84 (Term -> Factor OtherFactor .)
+    RMIDPAREN       reduce using rule 84 (Term -> Factor OtherFactor .)
+    SEMI            reduce using rule 84 (Term -> Factor OtherFactor .)
+    END             reduce using rule 84 (Term -> Factor OtherFactor .)
+    ELSE            reduce using rule 84 (Term -> Factor OtherFactor .)
+    ENDWH           reduce using rule 84 (Term -> Factor OtherFactor .)
+    FI              reduce using rule 84 (Term -> Factor OtherFactor .)
+    THEN            reduce using rule 84 (Term -> Factor OtherFactor .)
+    DO              reduce using rule 84 (Term -> Factor OtherFactor .)
+
+
+state 95
+
+    (86) OtherFactor -> MultOp . Term
+    (84) Term -> . Factor OtherFactor
+    (87) Factor -> . LPAREN Exp RPAREN
+    (88) Factor -> . INTC
+    (89) Factor -> . Variable
+    (90) Variable -> . ID VariMore
+
+    LPAREN          shift and go to state 61
+    INTC            shift and go to state 62
+    ID              shift and go to state 64
+
+    Term                           shift and go to state 125
+    Factor                         shift and go to state 60
+    Variable                       shift and go to state 63
+
+state 96
+
+    (101) MultOp -> TIMES .
+
+    LPAREN          reduce using rule 101 (MultOp -> TIMES .)
+    INTC            reduce using rule 101 (MultOp -> TIMES .)
+    ID              reduce using rule 101 (MultOp -> TIMES .)
+
+
+state 97
+
+    (102) MultOp -> OVER .
+
+    LPAREN          reduce using rule 102 (MultOp -> OVER .)
+    INTC            reduce using rule 102 (MultOp -> OVER .)
+    ID              reduce using rule 102 (MultOp -> OVER .)
+
+
+state 98
+
+    (87) Factor -> LPAREN Exp . RPAREN
+
+    RPAREN          shift and go to state 126
+
+
+state 99
+
+    (90) Variable -> ID VariMore .
+
+    TIMES           reduce using rule 90 (Variable -> ID VariMore .)
+    OVER            reduce using rule 90 (Variable -> ID VariMore .)
+    PLUS            reduce using rule 90 (Variable -> ID VariMore .)
+    MINUS           reduce using rule 90 (Variable -> ID VariMore .)
+    LT              reduce using rule 90 (Variable -> ID VariMore .)
+    EQ              reduce using rule 90 (Variable -> ID VariMore .)
+    COMMA           reduce using rule 90 (Variable -> ID VariMore .)
+    RPAREN          reduce using rule 90 (Variable -> ID VariMore .)
+    RMIDPAREN       reduce using rule 90 (Variable -> ID VariMore .)
+    SEMI            reduce using rule 90 (Variable -> ID VariMore .)
+    END             reduce using rule 90 (Variable -> ID VariMore .)
+    ELSE            reduce using rule 90 (Variable -> ID VariMore .)
+    ENDWH           reduce using rule 90 (Variable -> ID VariMore .)
+    FI              reduce using rule 90 (Variable -> ID VariMore .)
+    THEN            reduce using rule 90 (Variable -> ID VariMore .)
+    DO              reduce using rule 90 (Variable -> ID VariMore .)
+
+
+state 100
+
+    (69) LoopStm -> WHILE RelExp DO . StmList ENDWH
+    (56) StmList -> . Stm StmMore
+    (59) Stm -> . ConditionalStm
+    (60) Stm -> . LoopStm
+    (61) Stm -> . InputStm
+    (62) Stm -> . OutputStm
+    (63) Stm -> . ReturnStm
+    (64) Stm -> . ID AssCall
+    (68) ConditionalStm -> . IF RelExp THEN StmList ELSE StmList FI
+    (69) LoopStm -> . WHILE RelExp DO StmList ENDWH
+    (70) InputStm -> . READ LPAREN Invar RPAREN
+    (72) OutputStm -> . WRITE LPAREN Exp RPAREN
+    (73) ReturnStm -> . RETURN LPAREN Exp RPAREN
+
+    ID              shift and go to state 26
+    IF              shift and go to state 27
+    WHILE           shift and go to state 28
+    READ            shift and go to state 29
+    WRITE           shift and go to state 30
+    RETURN          shift and go to state 31
+
+    StmList                        shift and go to state 127
+    Stm                            shift and go to state 20
+    ConditionalStm                 shift and go to state 21
+    LoopStm                        shift and go to state 22
+    InputStm                       shift and go to state 23
+    OutputStm                      shift and go to state 24
+    ReturnStm                      shift and go to state 25
+
+state 101
+
+    (70) InputStm -> READ LPAREN Invar . RPAREN
+
+    RPAREN          shift and go to state 128
+
+
+state 102
+
+    (71) Invar -> ID .
+
+    RPAREN          reduce using rule 71 (Invar -> ID .)
+
+
+state 103
+
+    (72) OutputStm -> WRITE LPAREN Exp . RPAREN
+
+    RPAREN          shift and go to state 129
+
+
+state 104
+
+    (73) ReturnStm -> RETURN LPAREN Exp . RPAREN
+
+    RPAREN          shift and go to state 130
+
+
+state 105
+
+    (39) ProcDeclaration -> PROCEDURE ProcName LPAREN . ParamList RPAREN SEMI ProcDecPart ProcBody ProcDecMore
+    (43) ParamList -> .
+    (44) ParamList -> . ParamDecList
+    (45) ParamDecList -> . Param ParamMore
+    (48) Param -> . TypeName FormList
+    (49) Param -> . VAR TypeName FormList
+    (12) TypeName -> . BaseType
+    (13) TypeName -> . StructureType
+    (14) TypeName -> . ID
+    (15) BaseType -> . INTEGER
+    (16) BaseType -> . CHAR
+    (17) StructureType -> . ArrayType
+    (18) StructureType -> . RecType
+    (19) ArrayType -> . ARRAY LMIDPAREN INTC UNDERANGE INTC RMIDPAREN OF BaseType
+    (20) RecType -> . RECORD FieldDecList END
+
+    RPAREN          reduce using rule 43 (ParamList -> .)
+    VAR             shift and go to state 135
+    ID              shift and go to state 39
+    INTEGER         shift and go to state 40
+    CHAR            shift and go to state 41
+    ARRAY           shift and go to state 44
+    RECORD          shift and go to state 45
+
+    ParamList                      shift and go to state 131
+    ParamDecList                   shift and go to state 132
+    Param                          shift and go to state 133
+    TypeName                       shift and go to state 134
+    BaseType                       shift and go to state 37
+    StructureType                  shift and go to state 38
+    ArrayType                      shift and go to state 42
+    RecType                        shift and go to state 43
+
+state 106
+
+    (31) VarDecList -> TypeName VarIdList SEMI . VarDecMore
+    (32) VarDecMore -> .
+    (33) VarDecMore -> . VarDecList
+    (31) VarDecList -> . TypeName VarIdList SEMI VarDecMore
+    (12) TypeName -> . BaseType
+    (13) TypeName -> . StructureType
+    (14) TypeName -> . ID
+    (15) BaseType -> . INTEGER
+    (16) BaseType -> . CHAR
+    (17) StructureType -> . ArrayType
+    (18) StructureType -> . RecType
+    (19) ArrayType -> . ARRAY LMIDPAREN INTC UNDERANGE INTC RMIDPAREN OF BaseType
+    (20) RecType -> . RECORD FieldDecList END
+
+    PROCEDURE       reduce using rule 32 (VarDecMore -> .)
+    BEGIN           reduce using rule 32 (VarDecMore -> .)
+    ID              shift and go to state 39
+    INTEGER         shift and go to state 40
+    CHAR            shift and go to state 41
+    ARRAY           shift and go to state 44
+    RECORD          shift and go to state 45
+
+    TypeName                       shift and go to state 36
+    VarDecMore                     shift and go to state 136
+    VarDecList                     shift and go to state 137
+    BaseType                       shift and go to state 37
+    StructureType                  shift and go to state 38
+    ArrayType                      shift and go to state 42
+    RecType                        shift and go to state 43
+
+state 107
+
+    (34) VarIdList -> ID VarIdMore .
+
+    SEMI            reduce using rule 34 (VarIdList -> ID VarIdMore .)
+
+
+state 108
+
+    (36) VarIdMore -> COMMA . VarIdList
+    (34) VarIdList -> . ID VarIdMore
+
+    ID              shift and go to state 72
+
+    VarIdList                      shift and go to state 138
+
+state 109
+
+    (19) ArrayType -> ARRAY LMIDPAREN INTC . UNDERANGE INTC RMIDPAREN OF BaseType
+
+    UNDERANGE       shift and go to state 139
+
+
+state 110
+
+    (20) RecType -> RECORD FieldDecList END .
+
+    ID              reduce using rule 20 (RecType -> RECORD FieldDecList END .)
+    SEMI            reduce using rule 20 (RecType -> RECORD FieldDecList END .)
+
+
+state 111
+
+    (21) FieldDecList -> BaseType IdList . SEMI FieldDecMore
+
+    SEMI            shift and go to state 140
+
+
+state 112
+
+    (25) IdList -> ID . IdMore
+    (26) IdMore -> .
+    (27) IdMore -> . COMMA IdList
+
+    SEMI            reduce using rule 26 (IdMore -> .)
+    COMMA           shift and go to state 142
+
+    IdMore                         shift and go to state 141
+
+state 113
+
+    (22) FieldDecList -> ArrayType IdList . SEMI FieldDecMore
+
+    SEMI            shift and go to state 143
+
+
+state 114
+
+    (8) TypeDecList -> TypeId EQ TypeName SEMI . TypeDecMore
+    (9) TypeDecMore -> .
+    (10) TypeDecMore -> . TypeDecList
+    (8) TypeDecList -> . TypeId EQ TypeName SEMI TypeDecMore
+    (11) TypeId -> . ID
+
+    VAR             reduce using rule 9 (TypeDecMore -> .)
+    PROCEDURE       reduce using rule 9 (TypeDecMore -> .)
+    BEGIN           reduce using rule 9 (TypeDecMore -> .)
+    ID              shift and go to state 17
+
+    TypeId                         shift and go to state 16
+    TypeDecMore                    shift and go to state 144
+    TypeDecList                    shift and go to state 145
+
+state 115
+
+    (67) AssignmentRest -> VariMore ASSIGN Exp .
+
+    SEMI            reduce using rule 67 (AssignmentRest -> VariMore ASSIGN Exp .)
+    END             reduce using rule 67 (AssignmentRest -> VariMore ASSIGN Exp .)
+    ELSE            reduce using rule 67 (AssignmentRest -> VariMore ASSIGN Exp .)
+    ENDWH           reduce using rule 67 (AssignmentRest -> VariMore ASSIGN Exp .)
+    FI              reduce using rule 67 (AssignmentRest -> VariMore ASSIGN Exp .)
+
+
+state 116
+
+    (74) CallStmRest -> LPAREN ActParamList RPAREN .
+
+    SEMI            reduce using rule 74 (CallStmRest -> LPAREN ActParamList RPAREN .)
+    END             reduce using rule 74 (CallStmRest -> LPAREN ActParamList RPAREN .)
+    ELSE            reduce using rule 74 (CallStmRest -> LPAREN ActParamList RPAREN .)
+    ENDWH           reduce using rule 74 (CallStmRest -> LPAREN ActParamList RPAREN .)
+    FI              reduce using rule 74 (CallStmRest -> LPAREN ActParamList RPAREN .)
+
+
+state 117
+
+    (76) ActParamList -> Exp ActParamMore .
+
+    RPAREN          reduce using rule 76 (ActParamList -> Exp ActParamMore .)
+
+
+state 118
+
+    (78) ActParamMore -> COMMA . ActParamList
+    (75) ActParamList -> .
+    (76) ActParamList -> . Exp ActParamMore
+    (81) Exp -> . Term OtherTerm
+    (84) Term -> . Factor OtherFactor
+    (87) Factor -> . LPAREN Exp RPAREN
+    (88) Factor -> . INTC
+    (89) Factor -> . Variable
+    (90) Variable -> . ID VariMore
+
+    RPAREN          reduce using rule 75 (ActParamList -> .)
+    LPAREN          shift and go to state 61
+    INTC            shift and go to state 62
+    ID              shift and go to state 64
+
+    ActParamList                   shift and go to state 146
+    Exp                            shift and go to state 81
+    Term                           shift and go to state 59
+    Factor                         shift and go to state 60
+    Variable                       shift and go to state 63
+
+state 119
+
+    (92) VariMore -> LMIDPAREN Exp RMIDPAREN .
+
+    ASSIGN          reduce using rule 92 (VariMore -> LMIDPAREN Exp RMIDPAREN .)
+    TIMES           reduce using rule 92 (VariMore -> LMIDPAREN Exp RMIDPAREN .)
+    OVER            reduce using rule 92 (VariMore -> LMIDPAREN Exp RMIDPAREN .)
+    PLUS            reduce using rule 92 (VariMore -> LMIDPAREN Exp RMIDPAREN .)
+    MINUS           reduce using rule 92 (VariMore -> LMIDPAREN Exp RMIDPAREN .)
+    LT              reduce using rule 92 (VariMore -> LMIDPAREN Exp RMIDPAREN .)
+    EQ              reduce using rule 92 (VariMore -> LMIDPAREN Exp RMIDPAREN .)
+    COMMA           reduce using rule 92 (VariMore -> LMIDPAREN Exp RMIDPAREN .)
+    RPAREN          reduce using rule 92 (VariMore -> LMIDPAREN Exp RMIDPAREN .)
+    RMIDPAREN       reduce using rule 92 (VariMore -> LMIDPAREN Exp RMIDPAREN .)
+    SEMI            reduce using rule 92 (VariMore -> LMIDPAREN Exp RMIDPAREN .)
+    END             reduce using rule 92 (VariMore -> LMIDPAREN Exp RMIDPAREN .)
+    ELSE            reduce using rule 92 (VariMore -> LMIDPAREN Exp RMIDPAREN .)
+    ENDWH           reduce using rule 92 (VariMore -> LMIDPAREN Exp RMIDPAREN .)
+    FI              reduce using rule 92 (VariMore -> LMIDPAREN Exp RMIDPAREN .)
+    THEN            reduce using rule 92 (VariMore -> LMIDPAREN Exp RMIDPAREN .)
+    DO              reduce using rule 92 (VariMore -> LMIDPAREN Exp RMIDPAREN .)
+
+
+state 120
+
+    (94) FieldVar -> ID FieldVarMore .
+
+    ASSIGN          reduce using rule 94 (FieldVar -> ID FieldVarMore .)
+    TIMES           reduce using rule 94 (FieldVar -> ID FieldVarMore .)
+    OVER            reduce using rule 94 (FieldVar -> ID FieldVarMore .)
+    PLUS            reduce using rule 94 (FieldVar -> ID FieldVarMore .)
+    MINUS           reduce using rule 94 (FieldVar -> ID FieldVarMore .)
+    LT              reduce using rule 94 (FieldVar -> ID FieldVarMore .)
+    EQ              reduce using rule 94 (FieldVar -> ID FieldVarMore .)
+    COMMA           reduce using rule 94 (FieldVar -> ID FieldVarMore .)
+    RPAREN          reduce using rule 94 (FieldVar -> ID FieldVarMore .)
+    RMIDPAREN       reduce using rule 94 (FieldVar -> ID FieldVarMore .)
+    SEMI            reduce using rule 94 (FieldVar -> ID FieldVarMore .)
+    END             reduce using rule 94 (FieldVar -> ID FieldVarMore .)
+    ELSE            reduce using rule 94 (FieldVar -> ID FieldVarMore .)
+    ENDWH           reduce using rule 94 (FieldVar -> ID FieldVarMore .)
+    FI              reduce using rule 94 (FieldVar -> ID FieldVarMore .)
+    THEN            reduce using rule 94 (FieldVar -> ID FieldVarMore .)
+    DO              reduce using rule 94 (FieldVar -> ID FieldVarMore .)
+
+
+state 121
+
+    (96) FieldVarMore -> LMIDPAREN . Exp RMIDPAREN
+    (81) Exp -> . Term OtherTerm
+    (84) Term -> . Factor OtherFactor
+    (87) Factor -> . LPAREN Exp RPAREN
+    (88) Factor -> . INTC
+    (89) Factor -> . Variable
+    (90) Variable -> . ID VariMore
+
+    LPAREN          shift and go to state 61
+    INTC            shift and go to state 62
+    ID              shift and go to state 64
+
+    Exp                            shift and go to state 147
+    Term                           shift and go to state 59
+    Factor                         shift and go to state 60
+    Variable                       shift and go to state 63
+
+state 122
+
+    (68) ConditionalStm -> IF RelExp THEN StmList . ELSE StmList FI
+
+    ELSE            shift and go to state 148
+
+
+state 123
+
+    (80) OtherRelE -> CmpOp Exp .
+
+    THEN            reduce using rule 80 (OtherRelE -> CmpOp Exp .)
+    DO              reduce using rule 80 (OtherRelE -> CmpOp Exp .)
+
+
+state 124
+
+    (83) OtherTerm -> AddOp Exp .
+
+    LT              reduce using rule 83 (OtherTerm -> AddOp Exp .)
+    EQ              reduce using rule 83 (OtherTerm -> AddOp Exp .)
+    COMMA           reduce using rule 83 (OtherTerm -> AddOp Exp .)
+    RPAREN          reduce using rule 83 (OtherTerm -> AddOp Exp .)
+    RMIDPAREN       reduce using rule 83 (OtherTerm -> AddOp Exp .)
+    SEMI            reduce using rule 83 (OtherTerm -> AddOp Exp .)
+    END             reduce using rule 83 (OtherTerm -> AddOp Exp .)
+    ELSE            reduce using rule 83 (OtherTerm -> AddOp Exp .)
+    ENDWH           reduce using rule 83 (OtherTerm -> AddOp Exp .)
+    FI              reduce using rule 83 (OtherTerm -> AddOp Exp .)
+    THEN            reduce using rule 83 (OtherTerm -> AddOp Exp .)
+    DO              reduce using rule 83 (OtherTerm -> AddOp Exp .)
+
+
+state 125
+
+    (86) OtherFactor -> MultOp Term .
+
+    PLUS            reduce using rule 86 (OtherFactor -> MultOp Term .)
+    MINUS           reduce using rule 86 (OtherFactor -> MultOp Term .)
+    LT              reduce using rule 86 (OtherFactor -> MultOp Term .)
+    EQ              reduce using rule 86 (OtherFactor -> MultOp Term .)
+    COMMA           reduce using rule 86 (OtherFactor -> MultOp Term .)
+    RPAREN          reduce using rule 86 (OtherFactor -> MultOp Term .)
+    RMIDPAREN       reduce using rule 86 (OtherFactor -> MultOp Term .)
+    SEMI            reduce using rule 86 (OtherFactor -> MultOp Term .)
+    END             reduce using rule 86 (OtherFactor -> MultOp Term .)
+    ELSE            reduce using rule 86 (OtherFactor -> MultOp Term .)
+    ENDWH           reduce using rule 86 (OtherFactor -> MultOp Term .)
+    FI              reduce using rule 86 (OtherFactor -> MultOp Term .)
+    THEN            reduce using rule 86 (OtherFactor -> MultOp Term .)
+    DO              reduce using rule 86 (OtherFactor -> MultOp Term .)
+
+
+state 126
+
+    (87) Factor -> LPAREN Exp RPAREN .
+
+    TIMES           reduce using rule 87 (Factor -> LPAREN Exp RPAREN .)
+    OVER            reduce using rule 87 (Factor -> LPAREN Exp RPAREN .)
+    PLUS            reduce using rule 87 (Factor -> LPAREN Exp RPAREN .)
+    MINUS           reduce using rule 87 (Factor -> LPAREN Exp RPAREN .)
+    LT              reduce using rule 87 (Factor -> LPAREN Exp RPAREN .)
+    EQ              reduce using rule 87 (Factor -> LPAREN Exp RPAREN .)
+    COMMA           reduce using rule 87 (Factor -> LPAREN Exp RPAREN .)
+    RPAREN          reduce using rule 87 (Factor -> LPAREN Exp RPAREN .)
+    RMIDPAREN       reduce using rule 87 (Factor -> LPAREN Exp RPAREN .)
+    SEMI            reduce using rule 87 (Factor -> LPAREN Exp RPAREN .)
+    END             reduce using rule 87 (Factor -> LPAREN Exp RPAREN .)
+    ELSE            reduce using rule 87 (Factor -> LPAREN Exp RPAREN .)
+    ENDWH           reduce using rule 87 (Factor -> LPAREN Exp RPAREN .)
+    FI              reduce using rule 87 (Factor -> LPAREN Exp RPAREN .)
+    THEN            reduce using rule 87 (Factor -> LPAREN Exp RPAREN .)
+    DO              reduce using rule 87 (Factor -> LPAREN Exp RPAREN .)
+
+
+state 127
+
+    (69) LoopStm -> WHILE RelExp DO StmList . ENDWH
+
+    ENDWH           shift and go to state 149
+
+
+state 128
+
+    (70) InputStm -> READ LPAREN Invar RPAREN .
+
+    SEMI            reduce using rule 70 (InputStm -> READ LPAREN Invar RPAREN .)
+    END             reduce using rule 70 (InputStm -> READ LPAREN Invar RPAREN .)
+    ELSE            reduce using rule 70 (InputStm -> READ LPAREN Invar RPAREN .)
+    ENDWH           reduce using rule 70 (InputStm -> READ LPAREN Invar RPAREN .)
+    FI              reduce using rule 70 (InputStm -> READ LPAREN Invar RPAREN .)
+
+
+state 129
+
+    (72) OutputStm -> WRITE LPAREN Exp RPAREN .
+
+    SEMI            reduce using rule 72 (OutputStm -> WRITE LPAREN Exp RPAREN .)
+    END             reduce using rule 72 (OutputStm -> WRITE LPAREN Exp RPAREN .)
+    ELSE            reduce using rule 72 (OutputStm -> WRITE LPAREN Exp RPAREN .)
+    ENDWH           reduce using rule 72 (OutputStm -> WRITE LPAREN Exp RPAREN .)
+    FI              reduce using rule 72 (OutputStm -> WRITE LPAREN Exp RPAREN .)
+
+
+state 130
+
+    (73) ReturnStm -> RETURN LPAREN Exp RPAREN .
+
+    SEMI            reduce using rule 73 (ReturnStm -> RETURN LPAREN Exp RPAREN .)
+    END             reduce using rule 73 (ReturnStm -> RETURN LPAREN Exp RPAREN .)
+    ELSE            reduce using rule 73 (ReturnStm -> RETURN LPAREN Exp RPAREN .)
+    ENDWH           reduce using rule 73 (ReturnStm -> RETURN LPAREN Exp RPAREN .)
+    FI              reduce using rule 73 (ReturnStm -> RETURN LPAREN Exp RPAREN .)
+
+
+state 131
+
+    (39) ProcDeclaration -> PROCEDURE ProcName LPAREN ParamList . RPAREN SEMI ProcDecPart ProcBody ProcDecMore
+
+    RPAREN          shift and go to state 150
+
+
+state 132
+
+    (44) ParamList -> ParamDecList .
+
+    RPAREN          reduce using rule 44 (ParamList -> ParamDecList .)
+
+
+state 133
+
+    (45) ParamDecList -> Param . ParamMore
+    (46) ParamMore -> .
+    (47) ParamMore -> . SEMI ParamDecList
+
+    RPAREN          reduce using rule 46 (ParamMore -> .)
+    SEMI            shift and go to state 152
+
+    ParamMore                      shift and go to state 151
+
+state 134
+
+    (48) Param -> TypeName . FormList
+    (50) FormList -> . ID FidMore
+
+    ID              shift and go to state 154
+
+    FormList                       shift and go to state 153
+
+state 135
+
+    (49) Param -> VAR . TypeName FormList
+    (12) TypeName -> . BaseType
+    (13) TypeName -> . StructureType
+    (14) TypeName -> . ID
+    (15) BaseType -> . INTEGER
+    (16) BaseType -> . CHAR
+    (17) StructureType -> . ArrayType
+    (18) StructureType -> . RecType
+    (19) ArrayType -> . ARRAY LMIDPAREN INTC UNDERANGE INTC RMIDPAREN OF BaseType
+    (20) RecType -> . RECORD FieldDecList END
+
+    ID              shift and go to state 39
+    INTEGER         shift and go to state 40
+    CHAR            shift and go to state 41
+    ARRAY           shift and go to state 44
+    RECORD          shift and go to state 45
+
+    TypeName                       shift and go to state 155
+    BaseType                       shift and go to state 37
+    StructureType                  shift and go to state 38
+    ArrayType                      shift and go to state 42
+    RecType                        shift and go to state 43
+
+state 136
+
+    (31) VarDecList -> TypeName VarIdList SEMI VarDecMore .
+
+    PROCEDURE       reduce using rule 31 (VarDecList -> TypeName VarIdList SEMI VarDecMore .)
+    BEGIN           reduce using rule 31 (VarDecList -> TypeName VarIdList SEMI VarDecMore .)
+
+
+state 137
+
+    (33) VarDecMore -> VarDecList .
+
+    PROCEDURE       reduce using rule 33 (VarDecMore -> VarDecList .)
+    BEGIN           reduce using rule 33 (VarDecMore -> VarDecList .)
+
+
+state 138
+
+    (36) VarIdMore -> COMMA VarIdList .
+
+    SEMI            reduce using rule 36 (VarIdMore -> COMMA VarIdList .)
+
+
+state 139
+
+    (19) ArrayType -> ARRAY LMIDPAREN INTC UNDERANGE . INTC RMIDPAREN OF BaseType
+
+    INTC            shift and go to state 156
+
+
+state 140
+
+    (21) FieldDecList -> BaseType IdList SEMI . FieldDecMore
+    (23) FieldDecMore -> .
+    (24) FieldDecMore -> . FieldDecList
+    (21) FieldDecList -> . BaseType IdList SEMI FieldDecMore
+    (22) FieldDecList -> . ArrayType IdList SEMI FieldDecMore
+    (15) BaseType -> . INTEGER
+    (16) BaseType -> . CHAR
+    (19) ArrayType -> . ARRAY LMIDPAREN INTC UNDERANGE INTC RMIDPAREN OF BaseType
+
+    END             reduce using rule 23 (FieldDecMore -> .)
+    INTEGER         shift and go to state 40
+    CHAR            shift and go to state 41
+    ARRAY           shift and go to state 44
+
+    BaseType                       shift and go to state 75
+    FieldDecMore                   shift and go to state 157
+    FieldDecList                   shift and go to state 158
+    ArrayType                      shift and go to state 76
+
+state 141
+
+    (25) IdList -> ID IdMore .
+
+    SEMI            reduce using rule 25 (IdList -> ID IdMore .)
+
+
+state 142
+
+    (27) IdMore -> COMMA . IdList
+    (25) IdList -> . ID IdMore
+
+    ID              shift and go to state 112
+
+    IdList                         shift and go to state 159
+
+state 143
+
+    (22) FieldDecList -> ArrayType IdList SEMI . FieldDecMore
+    (23) FieldDecMore -> .
+    (24) FieldDecMore -> . FieldDecList
+    (21) FieldDecList -> . BaseType IdList SEMI FieldDecMore
+    (22) FieldDecList -> . ArrayType IdList SEMI FieldDecMore
+    (15) BaseType -> . INTEGER
+    (16) BaseType -> . CHAR
+    (19) ArrayType -> . ARRAY LMIDPAREN INTC UNDERANGE INTC RMIDPAREN OF BaseType
+
+    END             reduce using rule 23 (FieldDecMore -> .)
+    INTEGER         shift and go to state 40
+    CHAR            shift and go to state 41
+    ARRAY           shift and go to state 44
+
+    ArrayType                      shift and go to state 76
+    FieldDecMore                   shift and go to state 160
+    FieldDecList                   shift and go to state 158
+    BaseType                       shift and go to state 75
+
+state 144
+
+    (8) TypeDecList -> TypeId EQ TypeName SEMI TypeDecMore .
+
+    VAR             reduce using rule 8 (TypeDecList -> TypeId EQ TypeName SEMI TypeDecMore .)
+    PROCEDURE       reduce using rule 8 (TypeDecList -> TypeId EQ TypeName SEMI TypeDecMore .)
+    BEGIN           reduce using rule 8 (TypeDecList -> TypeId EQ TypeName SEMI TypeDecMore .)
+
+
+state 145
+
+    (10) TypeDecMore -> TypeDecList .
+
+    VAR             reduce using rule 10 (TypeDecMore -> TypeDecList .)
+    PROCEDURE       reduce using rule 10 (TypeDecMore -> TypeDecList .)
+    BEGIN           reduce using rule 10 (TypeDecMore -> TypeDecList .)
+
+
+state 146
+
+    (78) ActParamMore -> COMMA ActParamList .
+
+    RPAREN          reduce using rule 78 (ActParamMore -> COMMA ActParamList .)
+
+
+state 147
+
+    (96) FieldVarMore -> LMIDPAREN Exp . RMIDPAREN
+
+    RMIDPAREN       shift and go to state 161
+
+
+state 148
+
+    (68) ConditionalStm -> IF RelExp THEN StmList ELSE . StmList FI
+    (56) StmList -> . Stm StmMore
+    (59) Stm -> . ConditionalStm
+    (60) Stm -> . LoopStm
+    (61) Stm -> . InputStm
+    (62) Stm -> . OutputStm
+    (63) Stm -> . ReturnStm
+    (64) Stm -> . ID AssCall
+    (68) ConditionalStm -> . IF RelExp THEN StmList ELSE StmList FI
+    (69) LoopStm -> . WHILE RelExp DO StmList ENDWH
+    (70) InputStm -> . READ LPAREN Invar RPAREN
+    (72) OutputStm -> . WRITE LPAREN Exp RPAREN
+    (73) ReturnStm -> . RETURN LPAREN Exp RPAREN
+
+    ID              shift and go to state 26
+    IF              shift and go to state 27
+    WHILE           shift and go to state 28
+    READ            shift and go to state 29
+    WRITE           shift and go to state 30
+    RETURN          shift and go to state 31
+
+    StmList                        shift and go to state 162
+    Stm                            shift and go to state 20
+    ConditionalStm                 shift and go to state 21
+    LoopStm                        shift and go to state 22
+    InputStm                       shift and go to state 23
+    OutputStm                      shift and go to state 24
+    ReturnStm                      shift and go to state 25
+
+state 149
+
+    (69) LoopStm -> WHILE RelExp DO StmList ENDWH .
+
+    SEMI            reduce using rule 69 (LoopStm -> WHILE RelExp DO StmList ENDWH .)
+    END             reduce using rule 69 (LoopStm -> WHILE RelExp DO StmList ENDWH .)
+    ELSE            reduce using rule 69 (LoopStm -> WHILE RelExp DO StmList ENDWH .)
+    ENDWH           reduce using rule 69 (LoopStm -> WHILE RelExp DO StmList ENDWH .)
+    FI              reduce using rule 69 (LoopStm -> WHILE RelExp DO StmList ENDWH .)
+
+
+state 150
+
+    (39) ProcDeclaration -> PROCEDURE ProcName LPAREN ParamList RPAREN . SEMI ProcDecPart ProcBody ProcDecMore
+
+    SEMI            shift and go to state 163
+
+
+state 151
+
+    (45) ParamDecList -> Param ParamMore .
+
+    RPAREN          reduce using rule 45 (ParamDecList -> Param ParamMore .)
+
+
+state 152
+
+    (47) ParamMore -> SEMI . ParamDecList
+    (45) ParamDecList -> . Param ParamMore
+    (48) Param -> . TypeName FormList
+    (49) Param -> . VAR TypeName FormList
+    (12) TypeName -> . BaseType
+    (13) TypeName -> . StructureType
+    (14) TypeName -> . ID
+    (15) BaseType -> . INTEGER
+    (16) BaseType -> . CHAR
+    (17) StructureType -> . ArrayType
+    (18) StructureType -> . RecType
+    (19) ArrayType -> . ARRAY LMIDPAREN INTC UNDERANGE INTC RMIDPAREN OF BaseType
+    (20) RecType -> . RECORD FieldDecList END
+
+    VAR             shift and go to state 135
+    ID              shift and go to state 39
+    INTEGER         shift and go to state 40
+    CHAR            shift and go to state 41
+    ARRAY           shift and go to state 44
+    RECORD          shift and go to state 45
+
+    ParamDecList                   shift and go to state 164
+    Param                          shift and go to state 133
+    TypeName                       shift and go to state 134
+    BaseType                       shift and go to state 37
+    StructureType                  shift and go to state 38
+    ArrayType                      shift and go to state 42
+    RecType                        shift and go to state 43
+
+state 153
+
+    (48) Param -> TypeName FormList .
+
+    SEMI            reduce using rule 48 (Param -> TypeName FormList .)
+    RPAREN          reduce using rule 48 (Param -> TypeName FormList .)
+
+
+state 154
+
+    (50) FormList -> ID . FidMore
+    (51) FidMore -> .
+    (52) FidMore -> . COMMA FormList
+
+    SEMI            reduce using rule 51 (FidMore -> .)
+    RPAREN          reduce using rule 51 (FidMore -> .)
+    COMMA           shift and go to state 166
+
+    FidMore                        shift and go to state 165
+
+state 155
+
+    (49) Param -> VAR TypeName . FormList
+    (50) FormList -> . ID FidMore
+
+    ID              shift and go to state 154
+
+    FormList                       shift and go to state 167
+
+state 156
+
+    (19) ArrayType -> ARRAY LMIDPAREN INTC UNDERANGE INTC . RMIDPAREN OF BaseType
+
+    RMIDPAREN       shift and go to state 168
+
+
+state 157
+
+    (21) FieldDecList -> BaseType IdList SEMI FieldDecMore .
+
+    END             reduce using rule 21 (FieldDecList -> BaseType IdList SEMI FieldDecMore .)
+
+
+state 158
+
+    (24) FieldDecMore -> FieldDecList .
+
+    END             reduce using rule 24 (FieldDecMore -> FieldDecList .)
+
+
+state 159
+
+    (27) IdMore -> COMMA IdList .
+
+    SEMI            reduce using rule 27 (IdMore -> COMMA IdList .)
+
+
+state 160
+
+    (22) FieldDecList -> ArrayType IdList SEMI FieldDecMore .
+
+    END             reduce using rule 22 (FieldDecList -> ArrayType IdList SEMI FieldDecMore .)
+
+
+state 161
+
+    (96) FieldVarMore -> LMIDPAREN Exp RMIDPAREN .
+
+    ASSIGN          reduce using rule 96 (FieldVarMore -> LMIDPAREN Exp RMIDPAREN .)
+    TIMES           reduce using rule 96 (FieldVarMore -> LMIDPAREN Exp RMIDPAREN .)
+    OVER            reduce using rule 96 (FieldVarMore -> LMIDPAREN Exp RMIDPAREN .)
+    PLUS            reduce using rule 96 (FieldVarMore -> LMIDPAREN Exp RMIDPAREN .)
+    MINUS           reduce using rule 96 (FieldVarMore -> LMIDPAREN Exp RMIDPAREN .)
+    LT              reduce using rule 96 (FieldVarMore -> LMIDPAREN Exp RMIDPAREN .)
+    EQ              reduce using rule 96 (FieldVarMore -> LMIDPAREN Exp RMIDPAREN .)
+    COMMA           reduce using rule 96 (FieldVarMore -> LMIDPAREN Exp RMIDPAREN .)
+    RPAREN          reduce using rule 96 (FieldVarMore -> LMIDPAREN Exp RMIDPAREN .)
+    RMIDPAREN       reduce using rule 96 (FieldVarMore -> LMIDPAREN Exp RMIDPAREN .)
+    SEMI            reduce using rule 96 (FieldVarMore -> LMIDPAREN Exp RMIDPAREN .)
+    END             reduce using rule 96 (FieldVarMore -> LMIDPAREN Exp RMIDPAREN .)
+    ELSE            reduce using rule 96 (FieldVarMore -> LMIDPAREN Exp RMIDPAREN .)
+    ENDWH           reduce using rule 96 (FieldVarMore -> LMIDPAREN Exp RMIDPAREN .)
+    FI              reduce using rule 96 (FieldVarMore -> LMIDPAREN Exp RMIDPAREN .)
+    THEN            reduce using rule 96 (FieldVarMore -> LMIDPAREN Exp RMIDPAREN .)
+    DO              reduce using rule 96 (FieldVarMore -> LMIDPAREN Exp RMIDPAREN .)
+
+
+state 162
+
+    (68) ConditionalStm -> IF RelExp THEN StmList ELSE StmList . FI
+
+    FI              shift and go to state 169
+
+
+state 163
+
+    (39) ProcDeclaration -> PROCEDURE ProcName LPAREN ParamList RPAREN SEMI . ProcDecPart ProcBody ProcDecMore
+    (53) ProcDecPart -> . DeclarePart
+    (4) DeclarePart -> . TypeDec VarDec ProcDec
+    (5) TypeDec -> .
+    (6) TypeDec -> . TypeDeclaration
+    (7) TypeDeclaration -> . TYPE TypeDecList
+
+    VAR             reduce using rule 5 (TypeDec -> .)
+    PROCEDURE       reduce using rule 5 (TypeDec -> .)
+    BEGIN           reduce using rule 5 (TypeDec -> .)
+    TYPE            shift and go to state 7
+
+    ProcDecPart                    shift and go to state 170
+    DeclarePart                    shift and go to state 171
+    TypeDec                        shift and go to state 5
+    TypeDeclaration                shift and go to state 6
+
+state 164
+
+    (47) ParamMore -> SEMI ParamDecList .
+
+    RPAREN          reduce using rule 47 (ParamMore -> SEMI ParamDecList .)
+
+
+state 165
+
+    (50) FormList -> ID FidMore .
+
+    SEMI            reduce using rule 50 (FormList -> ID FidMore .)
+    RPAREN          reduce using rule 50 (FormList -> ID FidMore .)
+
+
+state 166
+
+    (52) FidMore -> COMMA . FormList
+    (50) FormList -> . ID FidMore
+
+    ID              shift and go to state 154
+
+    FormList                       shift and go to state 172
+
+state 167
+
+    (49) Param -> VAR TypeName FormList .
+
+    SEMI            reduce using rule 49 (Param -> VAR TypeName FormList .)
+    RPAREN          reduce using rule 49 (Param -> VAR TypeName FormList .)
+
+
+state 168
+
+    (19) ArrayType -> ARRAY LMIDPAREN INTC UNDERANGE INTC RMIDPAREN . OF BaseType
+
+    OF              shift and go to state 173
+
+
+state 169
+
+    (68) ConditionalStm -> IF RelExp THEN StmList ELSE StmList FI .
+
+    SEMI            reduce using rule 68 (ConditionalStm -> IF RelExp THEN StmList ELSE StmList FI .)
+    END             reduce using rule 68 (ConditionalStm -> IF RelExp THEN StmList ELSE StmList FI .)
+    ELSE            reduce using rule 68 (ConditionalStm -> IF RelExp THEN StmList ELSE StmList FI .)
+    ENDWH           reduce using rule 68 (ConditionalStm -> IF RelExp THEN StmList ELSE StmList FI .)
+    FI              reduce using rule 68 (ConditionalStm -> IF RelExp THEN StmList ELSE StmList FI .)
+
+
+state 170
+
+    (39) ProcDeclaration -> PROCEDURE ProcName LPAREN ParamList RPAREN SEMI ProcDecPart . ProcBody ProcDecMore
+    (54) ProcBody -> . ProgramBody
+    (55) ProgramBody -> . BEGIN StmList END
+
+    BEGIN           shift and go to state 11
+
+    ProcBody                       shift and go to state 174
+    ProgramBody                    shift and go to state 175
+
+state 171
+
+    (53) ProcDecPart -> DeclarePart .
+
+    BEGIN           reduce using rule 53 (ProcDecPart -> DeclarePart .)
+
+
+state 172
+
+    (52) FidMore -> COMMA FormList .
+
+    SEMI            reduce using rule 52 (FidMore -> COMMA FormList .)
+    RPAREN          reduce using rule 52 (FidMore -> COMMA FormList .)
+
+
+state 173
+
+    (19) ArrayType -> ARRAY LMIDPAREN INTC UNDERANGE INTC RMIDPAREN OF . BaseType
+    (15) BaseType -> . INTEGER
+    (16) BaseType -> . CHAR
+
+    INTEGER         shift and go to state 40
+    CHAR            shift and go to state 41
+
+    BaseType                       shift and go to state 176
+
+state 174
+
+    (39) ProcDeclaration -> PROCEDURE ProcName LPAREN ParamList RPAREN SEMI ProcDecPart ProcBody . ProcDecMore
+    (40) ProcDecMore -> .
+    (41) ProcDecMore -> . ProcDec
+    (37) ProcDec -> .
+    (38) ProcDec -> . ProcDeclaration
+    (39) ProcDeclaration -> . PROCEDURE ProcName LPAREN ParamList RPAREN SEMI ProcDecPart ProcBody ProcDecMore
+
+  ! reduce/reduce conflict for BEGIN resolved using rule 37 (ProcDec -> .)
+    BEGIN           reduce using rule 37 (ProcDec -> .)
+    PROCEDURE       shift and go to state 34
+
+  ! BEGIN           [ reduce using rule 40 (ProcDecMore -> .) ]
+
+    ProcDecMore                    shift and go to state 177
+    ProcDec                        shift and go to state 178
+    ProcDeclaration                shift and go to state 33
+
+state 175
+
+    (54) ProcBody -> ProgramBody .
+
+    PROCEDURE       reduce using rule 54 (ProcBody -> ProgramBody .)
+    BEGIN           reduce using rule 54 (ProcBody -> ProgramBody .)
+
+
+state 176
+
+    (19) ArrayType -> ARRAY LMIDPAREN INTC UNDERANGE INTC RMIDPAREN OF BaseType .
+
+    ID              reduce using rule 19 (ArrayType -> ARRAY LMIDPAREN INTC UNDERANGE INTC RMIDPAREN OF BaseType .)
+    SEMI            reduce using rule 19 (ArrayType -> ARRAY LMIDPAREN INTC UNDERANGE INTC RMIDPAREN OF BaseType .)
+
+
+state 177
+
+    (39) ProcDeclaration -> PROCEDURE ProcName LPAREN ParamList RPAREN SEMI ProcDecPart ProcBody ProcDecMore .
+
+    BEGIN           reduce using rule 39 (ProcDeclaration -> PROCEDURE ProcName LPAREN ParamList RPAREN SEMI ProcDecPart ProcBody ProcDecMore .)
+
+
+state 178
+
+    (41) ProcDecMore -> ProcDec .
+
+    BEGIN           reduce using rule 41 (ProcDecMore -> ProcDec .)
+
+WARNING: 
+WARNING: Conflicts:
+WARNING: 
+WARNING: reduce/reduce conflict in state 174 resolved using rule (ProcDec -> <empty>)
+WARNING: rejected rule (ProcDecMore -> <empty>) in state 174
+WARNING: Rule (ProcDecMore -> <empty>) is never reduced
