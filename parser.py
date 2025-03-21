@@ -90,7 +90,7 @@ class SNLParser:
     # ArrayType ::= ARRAY LMIDPAREN INTC UNDERANGE INTC RMIDPAREN OF BaseType
     def p_ArrayType(self, p):
         '''ArrayType : ARRAY LMIDPAREN INTC UNDERANGE INTC RMIDPAREN OF BaseType'''
-        p[0] = ('ArrayType', p[3], p[5], p[7])
+        p[0] = ('ArrayType', p[3], p[5], p[8])
 
     # RecType ::= RECORD FieldDecList END
     def p_RecType(self, p):
@@ -492,5 +492,6 @@ if __name__ == '__main__':
         print("\n语法分析成功！")
         print("抽象语法树 (AST):")
         print_ast(parse_tree)
+        print(parse_tree)
     else:
         print("\n语法分析失败！")
