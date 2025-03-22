@@ -1,23 +1,19 @@
-{给出一个错误的程序，测试是否能够检查出来，}
-
-program _error
-TYPE 
-      rack = record integer a,b,c; end;
-      t = integer;
-var integer s, j;
-    char s;
-procedure factor(intaeger n;var integer m);
-var integer w;
+program sd
+type i=integer;
+    sarray=array [0..5] of integer;
+var i x;
+    sarray y;
+    integer ss;
+procedure sd(integer a);
 begin
-if n=0
-then m:=1
-else 
-  factor(n-1,w);
-  m:=n*w
-fi
+    write(a)
 end
 begin
-read(s);
-factor(s,t);
-write(t)
-end. 
+    ss:=0;
+    while ss<6 do
+        y[ss]:=ss;
+        x:=y[ss];
+        sd(x);
+        ss:=ss+1
+    endwh
+end.
