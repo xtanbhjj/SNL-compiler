@@ -499,14 +499,14 @@ class SemanticAnalyzer:
         formal_params = self._get_formal_parameters(proc_name)
         # 检查实际参数与形式参数的匹配
         actual_params = self._parse_act_param_list(act_param_list)
-        '''
+        
         if len(formal_params) != len(actual_params):
             self.error(f"参数数量不匹配：预期 {len(formal_params)}，实际 {len(actual_params)}")
         else:
             for formal, actual in zip(formal_params, actual_params):
                 if formal[0] != actual[0]:
                     self.error(f"参数类型不匹配：预期 {formal[0]}，实际 {actual[0]}")
-        '''
+        
     
     def _get_formal_parameters(self, proc_name):
         """从符号表中获取过程的形参列表"""
