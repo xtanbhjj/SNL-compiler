@@ -557,6 +557,7 @@ class SemanticAnalyzer:
 
     def visit_ConditionalStm(self, node):
         _, rel_exp, stm_list1, stm_list2 = node
+        #print(rel_exp, "i love you")
         rel_type, condition_result = self._get_expression_value(rel_exp)
         if rel_type != 'BOOLEAN':
             self.error(" 条件表达式必须为布尔值 ")
@@ -583,12 +584,14 @@ class SemanticAnalyzer:
     def visit_InputStm(self, node):
         _, invar = node  # 结构为 ('InputStm', Invar)
         var_name = invar[1]
+        self.emit_quad('IN', var_name, None, None)
         if not self.current_scope.lookup(var_name):
             self.error(f"输入变量 '{var_name}' 未声明")
 
     def visit_OutputStm(self, node):
         _, exp = node  # 结构为 ('OutputStm', Exp)
-        self._get_expression_value(exp)  # 仅检查表达式合法性
+        _, value = self._get_expression_value(exp)  # 仅检查表达式合法性
+        self.emit_quad('OUT', value, None, None)
 
     def visit_ReturnStm(self, node):
         _, exp = node  # 结构为 ('ReturnStm', Exp)
@@ -598,14 +601,14 @@ class SemanticAnalyzer:
 
     def visit_RelExp(self, node):
         _, exp, other_rel_e = node
-        exp_type, _ = self._get_expression_value(exp)
+        exp_type, value1 = self._get_expression_value(exp)
         cmp_op, cmp_exp = other_rel_e[1], other_rel_e[2]
-        cmp_exp_type, _ = self._get_expression_value(cmp_exp)
+        cmp_exp_type, value2 = self._get_expression_value(cmp_exp)
 
         if exp_type != cmp_exp_type:
             self.error(f" 比较操作类型不匹配 : {exp_type}  和  {cmp_exp_type}")
         result = self.generate_temp_var()
-        self.emit_quad(cmp_op[1], self._get_expression_value(exp)[1], self._get_expression_value(cmp_exp)[1], result)
+        self.emit_quad(cmp_op[1], value1, value2, result)
         return 'BOOLEAN', result # 返回类型和存储结果的临时变量
 
     def visit_Exp(self, node):
@@ -670,9 +673,12 @@ class SemanticAnalyzer:
                 if not isinstance(current_type, ArrayType):
                     self.error(f"{var_id} 不是数组类型")
                     return None
-                index_type, _ = self._get_expression_value(current_more[1])
+                index_type, value = self._get_expression_value(current_more[1])
                 if index_type != 'integer':
                     self.error("数组下标必须为整数")
+                value_pos = self.generate_temp_var()
+                self.emit_quad("[]", var_id, value, value_pos)
+                var_id = value_pos
                 current_type = current_type.element_type
                 current_more = None
                 
@@ -685,6 +691,9 @@ class SemanticAnalyzer:
                     self.error(f"字段 {field_name} 不存在于记录中")
                     return None
                 current_type = current_type.fields[field_name]
+                value_pos = self.generate_temp_var()
+                self.emit_quad(".", var_id, field_name, value_pos)
+                var_id = value_pos
                 current_more = current_more[1][2]
         
         return current_type, var_id
