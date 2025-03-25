@@ -1,6 +1,3 @@
-from lexer import *
-from Quad import *
-
 '''
 class MIPSGenerator:
     def __init__(self, quadruples):
@@ -280,7 +277,6 @@ class MIPSGenerator:
             self.reg_pool.insert(0, reg)
 
 
-
     def emit(self, instruction):
         """添加指令到代码列表"""
         self.code.append(instruction)
@@ -328,15 +324,14 @@ class MIPSGenerator:
 
     def _gen_assign(self, op, src, _, dest):
         dest_reg = self.get_reg(dest)
-        if isinstance(src, int):  # 立即数
+        if isinstance(src, int):  
             self.emit(f"li {dest_reg}, {src}")
-        else:  # 变量到变量
+        else:  
             src_reg = self.get_reg(src)
             self.emit(f"move {dest_reg}, {src_reg}")
         self.free_reg(src)
 
     def _gen_lt(self, op, a, b, res):
-        """生成小于比较的 MIPS 代码"""
         res_reg = self.get_reg(res)
         a_reg = self.get_reg(a)
         if isinstance(b, int):
@@ -388,10 +383,8 @@ class MIPSGenerator:
 
     def _gen_then(self, op, cond, _, __):
         cond_reg = self.get_reg(cond)
-        # 生成条件跳转指令，目标地址暂时留空
         jump_index = self.emit(f"beqz {cond_reg}, else_label")
         self.emit("nop")
-        # 将需要回填的跳转指令索引和目标标号压入栈
         self.target_stack.append((jump_index, "else_label"))
 
     def _gen_else(self, op, _, __, ___):
@@ -430,23 +423,19 @@ class MIPSGenerator:
 
     def _gen_do(self, op, cond, _, __):
         cond_reg = self.get_reg(cond)
-        # 生成条件跳转指令，目标地址暂时留空
         jump_index = self.emit(f"beqz {cond_reg}, endwh")
         self.emit("nop")
-        # 将需要回填的跳转指令索引和目标标号压入栈
         self.target_stack.append((jump_index, "endwh"))
 
     def _gen_endwhile(self, op, __, _, ___):
         start_label = self.label_stack.pop()
         self.emit(f"j {start_label}")
         self.emit("nop")
-        # 回填 DO 语句的跳转目标
         if self.target_stack:
             do_jump_index, do_label = self.target_stack.pop()
             self.code[do_jump_index] = self.code[do_jump_index].replace(do_label, f"label{self.label_count}")
         else:
             raise RuntimeError(f"找不到与 ENDWHILE 对应的 DO 标签:")
-        # 定义循环结束的标号
         self.emit(f"label{self.label_count}:")
         self.label_count += 1
 
