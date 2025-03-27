@@ -23,16 +23,18 @@ class SymbolTable:
 
     def add_symbol(self, name, symbol_type, category='variable'):
         if name in self.symbols:
-            return False  # 重复定义
+            return None, None, None  # 重复定义
         self.symbols[name] = (symbol_type, self.offset, category)
         #print(symbol_type)
+        length = 0
         if symbol_type == "integer":
-            self.offset += 1
+            length = 1
         elif symbol_type == "char":
-            self.offset += 1
+            length = 1
         else:
-            self.offset += symbol_type.size    
-        return True
+            length = symbol_type.size
+        self.offset += length
+        return name, length, self.symbols[name][1]
 
     def lookup(self, name):
         current = self
@@ -370,8 +372,11 @@ class SemanticAnalyzer:
             ids = self.parse_id_list(var_id_list)
             if ids:
                 for id_name in ids:
-                    if not self.current_scope.add_symbol(id_name, var_type):
+                    name, length, offset = self.current_scope.add_symbol(id_name, var_type) 
+                    if not name:
                         self.error(f"Variable {id_name} already defined in this scope")
+                    else:
+                        self.emit_quad('DECLARE', offset, length, name)
 
         self.visit(var_dec_more)
     
@@ -403,6 +408,11 @@ class SemanticAnalyzer:
         self.visit(param_list_node)
         for i in self.current_scope.symbols:
             Proc.add_param(self.current_scope.symbols[i][0])
+        num = len(Proc.params)
+        for i in range(len(self.quadruples) - 1, -1, -1):
+            if self.quadruples[i].operator == 'PROCEDURE':
+                self.quadruples[i].result = num
+                break
         self.current_scope.parent.add_symbol(proc_name, Proc, 'PROCEDURE')
         print(self.current_scope.symbols)
         print(self.current_scope.parent.symbols)
@@ -468,8 +478,10 @@ class SemanticAnalyzer:
         
         # 添加参数到符号表
         full_type = ("var " if is_ref else "") + str(param_type)
-        if not self.current_scope.add_symbol(param_name, full_type, category='param'):
+        if not self.current_scope.add_symbol(param_name, full_type, category='param')[0]:
             self.error(f"参数 '{param_name}' 重复定义")
+        else:
+            self.emit_quad("get", None, None, param_name)
         
         # 处理后续参数（传递附加信息）
         if fid_more and fid_more[1]:

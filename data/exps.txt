@@ -1,7 +1,16 @@
 +--------------+------+------+--------+
 |   operator   | exp1 | exp2 | result |
 +--------------+------+------+--------+
-|  PROCEDURE   |  q   | None |  None  |
+|   DECLARE    |  0   |  1   |   i    |
+|   DECLARE    |  1   |  1   |   j    |
+|   DECLARE    |  2   |  1   |  num   |
+|   DECLARE    |  3   |  20  |   a    |
+|  PROCEDURE   |  q   | None |   1    |
+|     get      | None | None |  num   |
+|   DECLARE    |  1   |  1   |   i    |
+|   DECLARE    |  2   |  1   |   j    |
+|   DECLARE    |  3   |  1   |   k    |
+|   DECLARE    |  4   |  1   |   t    |
 |      :=      |  1   | None |   i    |
 |      :=      |  1   | None |   j    |
 |    WHILE     | None | None |  None  |
