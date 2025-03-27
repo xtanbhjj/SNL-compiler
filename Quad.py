@@ -478,10 +478,11 @@ class SemanticAnalyzer:
         
         # 添加参数到符号表
         full_type = ("var " if is_ref else "") + str(param_type)
-        if not self.current_scope.add_symbol(param_name, full_type, category='param')[0]:
+        name, length, offset = self.current_scope.add_symbol(param_name, full_type, category='param')
+        if not name:
             self.error(f"参数 '{param_name}' 重复定义")
         else:
-            self.emit_quad("get", None, None, param_name)
+            self.emit_quad("get", offset, length, param_name)
         
         # 处理后续参数（传递附加信息）
         if fid_more and fid_more[1]:
@@ -660,7 +661,16 @@ class SemanticAnalyzer:
             if exp_type != term_type:
                 self.error(" 操作类型不匹配 ")
             return None, None # 或者抛出异常
-
+        '''
+        if isinstance(term_value, int):
+            tmp = self.generate_temp_var()
+            self.emit_quad(':=', term_value, None, tmp)
+            term_value = tmp
+        if isinstance(exp_value, int):
+            tmp = self.generate_temp_var()
+            self.emit_quad(':=', exp_value, None, tmp)
+            exp_value = tmp
+        '''
         result = self.generate_temp_var()
         self.emit_quad(add_op[1], term_value, exp_value, result)
         return term_type, result
@@ -710,8 +720,12 @@ class SemanticAnalyzer:
                 index_type, value = self._get_expression_value(current_more[1])
                 if index_type != 'integer':
                     self.error("数组下标必须为整数")
+                cons_pos = self.generate_temp_var()
+                off_set = self.generate_temp_var()
                 value_pos = self.generate_temp_var()
-                self.emit_quad("[]", var_id, value, value_pos)
+                self.emit_quad(":=", 4, None, cons_pos)
+                self.emit_quad("*", value, cons_pos, off_set)
+                self.emit_quad("[]", var_id, off_set, value_pos)
                 var_id = value_pos
                 current_type = current_type.element_type
                 current_more = None

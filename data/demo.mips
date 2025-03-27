@@ -1,0 +1,196 @@
+.data
+newline: .asciiz "\n"
+.text
+.globl main
+main:
+li $sp, 0x7FFFFFFC
+addi $sp, $sp, -92
+q:
+subu $sp, $sp, 8
+sw $ra, 4($sp)
+sw $fp, 0($sp)
+move $fp, $sp
+addi $sp, $sp, -20
+sw $a0, 0($sp)
+lw $t0, 4($sp)
+li $t0, 1
+sw $t0, 4($sp)
+lw $t0, 8($sp)
+li $t0, 1
+sw $t0, 8($sp)
+label0:
+lw $t1, 4($sp)
+lw $t2, 0($sp)
+slt $t0, $t1, $t2
+sw $t2, 0($sp)
+sw $t1, 4($sp)
+beqz $t0, label5
+nop
+lw $t2, 4($sp)
+addi $t1, $t2, 1
+sw $t2, 4($sp)
+lw $t3, 0($sp)
+sub $t2, $t3, $t1
+sw $t3, 0($sp)
+lw $t3, 8($sp)
+lw $t3, $t2
+sw $t3, 8($sp)
+lw $t3, 12($sp)
+li $t3, 1
+sw $t3, 12($sp)
+label1:
+lw $t4, 12($sp)
+lw $t5, 8($sp)
+slt $t3, $t4, $t5
+sw $t5, 8($sp)
+sw $t4, 12($sp)
+beqz $t3, label4
+nop
+lw $t5, 12($sp)
+addi $t4, $t5, 1
+sw $t5, 12($sp)
+li $t5, 4
+mul $t6, $t4, $t5
+addi $t7, $t6, 12
+li $t8, 4
+lw $t10, 12($sp)
+mul $t9, $t10, $t8
+sw $t10, 12($sp)
+addi $t10, $t9, 12
+slt $t11, $t7, $t10
+beqz $t11, label3
+nop
+li $t12, 4
+lw $t14, 12($sp)
+mul $t13, $t14, $t12
+sw $t14, 12($sp)
+addi $t14, $t13, 12
+lw $t15, 16($sp)
+lw $t15, $t14
+sw $t15, 16($sp)
+li $t15, 4
+lw $t17, 12($sp)
+mul $t16, $t17, $t15
+sw $t17, 12($sp)
+addi $t17, $t16, 12
+lw $t19, 12($sp)
+addi $t18, $t19, 1
+sw $t19, 12($sp)
+li $t19, 4
+mul $t20, $t18, $t19
+addi $t21, $t20, 12
+lw $t17, $t21
+lw $t23, 12($sp)
+addi $t22, $t23, 1
+sw $t23, 12($sp)
+li $t23, 4
+mul $t24, $t22, $t23
+addi $t25, $t24, 12
+lw $t26, 16($sp)
+lw $t25, $t26
+sw $t26, 16($sp)
+j label2
+nop
+label2:
+lw $t26, 16($sp)
+li $t26, 0
+sw $t26, 16($sp)
+label3:
+lw $t27, 12($sp)
+addi $t26, $t27, 1
+sw $t27, 12($sp)
+lw $t27, 12($sp)
+lw $t27, $t26
+sw $t27, 12($sp)
+j label1
+nop
+label4:
+lw $t28, 4($sp)
+addi $t27, $t28, 1
+sw $t28, 4($sp)
+lw $t28, 4($sp)
+lw $t28, $t27
+sw $t28, 4($sp)
+j label0
+nop
+label5:
+move $sp, $fp
+lw $fp, 0($sp)
+lw $ra, 4($sp)
+addu $sp, $sp, 8
+jr $ra
+li $v0, 5
+syscall
+lw $t28, 0($sp)
+move $t28, $v0
+sw $t28, 0($sp)
+lw $t28, 4($sp)
+li $t28, 1
+sw $t28, 4($sp)
+label6:
+lw $t29, 0($sp)
+addi $t28, $t29, 1
+sw $t29, 0($sp)
+lw $t30, 4($sp)
+slt $t29, $t30, $t28
+sw $t30, 4($sp)
+beqz $t29, label7
+nop
+li $v0, 5
+syscall
+lw $t30, 8($sp)
+move $t30, $v0
+sw $t30, 8($sp)
+li $t30, 4
+lw $t32, 4($sp)
+mul $t31, $t32, $t30
+sw $t32, 4($sp)
+addi $t32, $t31, 12
+lw $t33, 8($sp)
+lw $t32, $t33
+sw $t33, 8($sp)
+lw $t34, 4($sp)
+addi $t33, $t34, 1
+sw $t34, 4($sp)
+lw $t34, 4($sp)
+lw $t34, $t33
+sw $t34, 4($sp)
+j label6
+nop
+label7:
+move $t34, $a0
+jal q
+lw $t35, 4($sp)
+li $t35, 1
+sw $t35, 4($sp)
+label8:
+lw $t34, 0($sp)
+addi $t35, $t34, 1
+sw $t34, 0($sp)
+lw $t36, 4($sp)
+slt $t34, $t36, $t35
+sw $t36, 4($sp)
+beqz $t34, label9
+nop
+li $t36, 4
+lw $t38, 4($sp)
+mul $t37, $t38, $t36
+sw $t38, 4($sp)
+addi $t38, $t37, 12
+li $v0, 1
+move $a0, $t38
+syscall
+li $v0, 4
+la $a0, newline
+syscall
+lw $t40, 4($sp)
+addi $t39, $t40, 1
+sw $t40, 4($sp)
+lw $t40, 4($sp)
+lw $t40, $t39
+sw $t40, 4($sp)
+j label8
+nop
+label9:
+li $v0, 10
+syscall
