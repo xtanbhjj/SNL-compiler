@@ -19,11 +19,19 @@ class SymbolTable:
         self.parent = parent      # 父作用域
         self.symbols = {}         # 符号表内容 {name: (type, category)}
         self.children = []        # 子作用域（用于嵌套）
+        self.offset = 0
 
     def add_symbol(self, name, symbol_type, category='variable'):
         if name in self.symbols:
             return False  # 重复定义
-        self.symbols[name] = (symbol_type, category)
+        self.symbols[name] = (symbol_type, self.offset, category)
+        #print(symbol_type)
+        if symbol_type == "integer":
+            self.offset += 1
+        elif symbol_type == "char":
+            self.offset += 1
+        else:
+            self.offset += symbol_type.size    
         return True
 
     def lookup(self, name):
@@ -38,6 +46,7 @@ class ProcType:
     """表示过程的类型，存储形参信息（类型和传递方式）"""
     def __init__(self):
         self.params = []  # 形参列表，每个元素为 (参数类型, 是否引用传递)
+        self.size = 0
 
     def add_param(self, param_type):
         """添加形参到参数列表"""
@@ -59,6 +68,15 @@ class RecType:
             fields: 一个字典，键是字段名（字符串），值是字段的类型（可以是 "INTEGER", "CHAR", 或 ArrayType 的实例）。
         """
         self.fields = fields
+        self.size = 0
+        print(self.fields)
+        for name, type in self.fields.items():
+            if type == "integer":
+                self.size += 1
+            elif type == "char":
+                self.size += 1
+            else:
+                self.size += type.size      
 
     def __str__(self):
         fields_str = ", ".join([f"{name}: {type}" for name, type in self.fields.items()])
@@ -72,6 +90,7 @@ class ArrayType:
         self.lower_bound = lower_bound
         self.upper_bound = upper_bound
         self.element_type = element_type
+        self.size = upper_bound - lower_bound + 1
 
     def __str__(self):
         return f"ARRAY [{self.lower_bound}..{self.upper_bound}] OF {self.element_type}"
@@ -108,8 +127,8 @@ class SemanticAnalyzer:
     def exit_scope(self):
         # 退出作用域时打印符号表
         print(f"\n退出作用域 '{self.current_scope.name}'，符号表内容：")
-        for name, (type_, category) in self.current_scope.symbols.items():
-            print(f"  {name}: 类型={type_}, 类别={category}")
+        for name, (type_, offset, category) in self.current_scope.symbols.items():
+            print(f"  {name}: offset = {offset},类型={type_}, 类别={category}")
         self.scope_stack.pop()
         self.current_scope = self.scope_stack[-1]
 
@@ -123,6 +142,8 @@ class SemanticAnalyzer:
             for error in self.errors:
                 print(error)
         else:
+            for name, (type_, offset, category) in self.current_scope.symbols.items():
+                print(f"  {name}: offset = {offset},类型={type_}, 类别={category}")
             table = PrettyTable(field_names=["operator", "exp1", "exp2", "result"])
             for i in self.quadruples:
                 table.add_row([i.operator, i.operand1, i.operand2, i.result])
@@ -517,7 +538,8 @@ class SemanticAnalyzer:
     def _handle_procedure_call(self, proc_name, call_node):
         _, act_param_list = call_node
         proc_info = self.current_scope.lookup(proc_name)
-        if not proc_info or proc_info[1] != 'PROCEDURE':
+        #print(proc_info)
+        if not proc_info or proc_info[2] != 'PROCEDURE':
             self.error(f" 过程  '{proc_name}'  未声明 ")
             return
 
