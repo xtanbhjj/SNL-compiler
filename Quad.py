@@ -70,9 +70,11 @@ class RecType:
             fields: 一个字典，键是字段名（字符串），值是字段的类型（可以是 "INTEGER", "CHAR", 或 ArrayType 的实例）。
         """
         self.fields = fields
+        self.offset = {}
         self.size = 0
-        print(self.fields)
+        #print(self.fields)
         for name, type in self.fields.items():
+            self.offset[name] = self.size
             if type == "integer":
                 self.size += 1
             elif type == "char":
@@ -244,7 +246,7 @@ class SemanticAnalyzer:
                         return None
             elif isinstance(structure_content, tuple) and len(structure_content) == 2 and structure_content[0] == 'RecType' :
                 fields = self.parse_dec_list(structure_content[1])
-                #print(fields)
+                #print(fields, "dwaidhiwa")
                 if fields is not None:
                     return RecType(fields)
             return None
@@ -267,14 +269,15 @@ class SemanticAnalyzer:
             if len(current_node) == 4:
                 type_node = current_node[1]
                 id_list_node = current_node[2]  # 注意这里索引是 2，因为 SEMI 是索引 2
-                field_dec_more_node = current_node[3]
+                field_dec_more_node = current_node[3][1]
 
                 field_type = None
                 if type_node[0] == 'BaseType':
                     field_type = self.analyze_base_type(type_node)
                 elif type_node[0] == 'ArrayType':
                     # 需要将 ArrayType 节点包装成 TypeName 的形式传递给 analyze_type_name
-                    field_type = self.analyze_type_name(('TypeName', ('StructureType', type_node)))
+                    field_type = self._resolve_type(('TypeName', ('StructureType', type_node)))
+                    #print(field_type)
 
                 if field_type:
                     ids = self.parse_id_list(id_list_node)
@@ -287,11 +290,9 @@ class SemanticAnalyzer:
                         if field_dec_more_node[0] == 'FieldDecList':
                             # Rule 24: FieldDecMore -> FieldDecList
                             more_fields = self.parse_dec_list(field_dec_more_node)
+                            #print(more_fields)
                             if more_fields:
                                 fields.update(more_fields)
-                        elif field_dec_more_node[0] == 'empty':
-                            # Rule 23: FieldDecMore -> <empty>
-                            break
             break # 处理完当前的 FieldDecList 就退出，FieldDecMore 会处理后续的
 
         return fields
@@ -735,14 +736,16 @@ class SemanticAnalyzer:
                     self.error(f"{var_id} 不是记录类型")
                     return None
                 field_name = current_more[1][1]  # FieldVar的ID
+                #print(current_type.fields)
                 if field_name not in current_type.fields:
                     self.error(f"字段 {field_name} 不存在于记录中")
                     return None
-                current_type = current_type.fields[field_name]
                 value_pos = self.generate_temp_var()
-                self.emit_quad(".", var_id, field_name, value_pos)
+                self.emit_quad("[]", var_id, current_type.offset[field_name], value_pos)
+                current_type = current_type.fields[field_name]
                 var_id = value_pos
                 current_more = current_more[1][2]
+                print(current_more)
         
         return current_type, var_id
 
