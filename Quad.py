@@ -540,14 +540,28 @@ class SemanticAnalyzer:
         else:
             self.error(f"未知的 AssCall 类型: {ass_call_node[0]}")
 
+    def check_string_in_nested_tuple(self, data, target_string):
+        if isinstance(data, str):
+            return data == target_string
+        elif isinstance(data, tuple):
+            for item in data:
+                if self.check_string_in_nested_tuple(item, target_string):
+                    return True
+        return False
     def _handle_assignment(self, var_name, assignment_node):
         _, var_more, exp = assignment_node
         curr_type, var_location = self._get_variable_value(("Variable", var_name, var_more))
+        flag = self.check_string_in_nested_tuple(("Variable", var_name, var_more), "Exp")
+        if flag:
+            self.quadruples.pop()
         exp_type, exp_value = self._get_expression_value(exp)
 
         if curr_type != exp_type:
             self.error(f" 类型不匹配：无法将  {exp_type}  赋值给  {curr_type}")
-        self.emit_quad(':=', exp_value, None, var_location)
+        if flag:
+            self.emit_quad(':=:', exp_value, None, var_location)
+        else:
+            self.emit_quad(':=', exp_value, None, var_location)
 
     def _handle_procedure_call(self, proc_name, call_node):
         _, act_param_list = call_node
@@ -727,6 +741,7 @@ class SemanticAnalyzer:
                 self.emit_quad(":=", 4, None, cons_pos)
                 self.emit_quad("*", value, cons_pos, off_set)
                 self.emit_quad("[]", var_id, off_set, value_pos)
+                self.emit_quad("load", value_pos, None, value_pos)
                 var_id = value_pos
                 current_type = current_type.element_type
                 current_more = None

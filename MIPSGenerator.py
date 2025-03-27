@@ -8,7 +8,7 @@ class MIPSGenerator:
         self.code = []
         self.label_count = 0
         self.reg_map = {}
-        self.reg_pool = ['$t%d' % i for i in range(100)]  # 可用的临时寄存器
+        self.reg_pool = ['$t%d' % i for i in range(10)]  # 可用的临时寄存器
         self.param_regs = ['$a%d' % i for i in range(4)] # 参数寄存器
         self.current_proc = None
         self.stack_offset1 = {} # 存储每个变量的偏移量
@@ -111,6 +111,8 @@ class MIPSGenerator:
             offset = self.stack_offset1.get(operator, 0)
             self.emit(f"sw {reg}, {offset}($sp)")
             self.free_reg(operator)
+        else:
+            self.free_reg(operator)
 
     def _gen_instruction(self, op, arg1, arg2, res):
         handler = {
@@ -131,9 +133,26 @@ class MIPSGenerator:
             'PROCEDURE': self._gen_procedure,
             'ENDPROCEDURE': self._gen_endprocedure,
             'call': self._gen_call,
+            'load': self._gen_load,
+            ':=:': self._addr_assign,
             '[]': self._gen_address
         }.get(op, self._gen_unknown)
         handler(op, arg1, arg2, res)
+
+    def _gen_load(self, op, addr, _, dest):
+        dest_reg = self.get_regs(dest)
+        self.emit(f'add {dest_reg}, $sp')
+        self.emit(f"lw {dest_reg}, 0({dest_reg})")
+
+    def _addr_assign(self, op, src, _, dest):
+        dest_reg = self.get_regs(dest)
+        if isinstance(src, int):  # 如果是数字，则直接加载到寄存器中
+            self.emit(f"sw {dest_reg}, {src}")
+        else: 
+            src_reg = self.get_regs(src)
+            self.emit(f"sw {dest_reg}, {src_reg}")
+            self.free_regs(src, src_reg)
+        self.free_regs(dest, dest_reg) 
 
     def _gen_address(self, op, addr, src, dest):
         dest_reg = self.get_regs(dest)
@@ -144,13 +163,15 @@ class MIPSGenerator:
         else:
             offset = self.stack_offset1.get(addr, 0)
             self.emit(f'addi {dest_reg}, {src_reg}, {offset}')
+        self.free_regs(src, src_reg)
+
     def _gen_assign(self, op, src, _, dest):
         dest_reg = self.get_regs(dest)
         if isinstance(src, int):  # 如果是数字，则直接加载到寄存器中
             self.emit(f"li {dest_reg}, {src}")
         else: 
             src_reg = self.get_regs(src)
-            self.emit(f"lw {dest_reg}, {src_reg}")
+            self.emit(f"move {dest_reg}, {src_reg}")
             self.free_regs(src, src_reg)
         self.free_regs(dest, dest_reg)
 
@@ -164,7 +185,6 @@ class MIPSGenerator:
             self.emit(f"slt {res_reg}, {a_reg}, {b_reg}")
             self.free_regs(b, b_reg)
         self.free_regs(a, a_reg)
-        self.free_regs(res, res_reg)
 
     def _gen_add(self, op, a, b, res):
         res_reg = self.get_regs(res)
@@ -176,7 +196,6 @@ class MIPSGenerator:
             self.emit(f"add {res_reg}, {a_reg}, {b_reg}")
             self.free_regs(b, b_reg)
         self.free_regs(a, a_reg)
-        self.free_regs(res, res_reg)
 
     def _gen_sub(self, op, a, b, res):
         res_reg = self.get_regs(res)
@@ -188,7 +207,6 @@ class MIPSGenerator:
             self.emit(f"sub {res_reg}, {a_reg}, {b_reg}")
             self.free_regs(b, b_reg)
         self.free_regs(a, a_reg)
-        self.free_regs(res, res_reg)
 
     def _gen_mul(self, op, a, b, res):
         res_reg = self.get_regs(res)
@@ -197,7 +215,6 @@ class MIPSGenerator:
         self.emit(f"mul {res_reg}, {a_reg}, {b_reg}")
         self.free_regs(a, a_reg)
         self.free_regs(b, b_reg)
-        self.free_regs(res, res_reg)
 
     def _gen_div(self, op, a, b, res):
         res_reg = self.get_regs(res)
@@ -207,7 +224,6 @@ class MIPSGenerator:
         self.emit(f"mflo {res_reg}")
         self.free_regs(a, a_reg)
         self.free_regs(b, b_reg)
-        self.free_regs(res, res_reg)
 
     def _gen_then(self, op, cond, _, __):
         cond_reg = self.get_reg(cond)
@@ -272,7 +288,6 @@ class MIPSGenerator:
         self.emit("syscall")
         reg = self.get_regs(var)
         self.emit(f"move {reg}, $v0")
-        self.free_regs(var, reg)
 
     def _gen_output(self, op, val, _, __):
         reg = self.get_regs(val)
@@ -283,7 +298,6 @@ class MIPSGenerator:
         self.emit("li $v0, 4")
         self.emit("la $a0, newline")
         self.emit("syscall")
-        self.free_regs(val, reg)
 
     def _gen_procedure(self, op, name, _, num):
         self.emit(f"{name}:")
