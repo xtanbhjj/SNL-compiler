@@ -11,7 +11,8 @@ class MIPSGenerator:
         self.reg_pool = ['$t%d' % i for i in range(10)]  # 可用的临时寄存器
         self.param_regs = ['$a%d' % i for i in range(4)] # 参数寄存器
         self.current_proc = None
-        self.stack_offset1 = {} # 存储每个变量的偏移量
+        self.stack_offset1 = {}
+        self.stack_list = []
         self.stack_offset = 0 # 当前栈帧大小
         self.target_stack = []# 目标指令地址栈 (存储需要回填的跳转指令索引)
         self.label_stack = []
@@ -37,11 +38,30 @@ class MIPSGenerator:
             reg = self.reg_map.pop(var)
             self.reg_pool.insert(0, reg)
 
-
     def emit(self, instruction):
         """添加指令到代码列表"""
         self.code.append(instruction)
         return len(self.code) - 1 # 返回指令的索引
+    
+    def get_offset(self, var):
+        if var in self.stack_offset1:
+            return self.stack_offset1.get(var, 0)
+        else:
+            offset = self.stack_offset1['size'] + 8
+            for i in range(len(self.stack_list)-1, -1, -1):
+                if var in self.stack_list[i]:
+                    return offset + self.stack_list[i].get(var, 0)
+                else:
+                    offset += self.stack_list[i]['size'] + 8
+    
+    def is_var(self, var):
+        if var in self.stack_offset1:
+            return True
+        else:
+            for i in range(len(self.stack_list)-1, -1, -1):
+                if var in self.stack_list[i]:
+                    return True
+            return False
 
     def generate(self):
         self.code.append(".data")
@@ -77,8 +97,9 @@ class MIPSGenerator:
             elif self.quads[idx].operator == 'param':
                 num = 0
                 while self.quads[idx].operator == 'param':
-                    arg_reg = self.get_reg(self.quads[idx].operand1)
-                    self.emit(f'move {arg_reg}, $a{num}')
+                    arg_reg = self.get_regs(self.quads[idx].operand1)
+                    self.emit(f'move $a{num}, {arg_reg}')
+                    self.free_regs(self.quads[idx].operand1, arg_reg)
                     num += 1
                     idx += 1
                 jk = idx
@@ -96,13 +117,14 @@ class MIPSGenerator:
             self.stack_offset += self.quads[idx].operand2 * self.size
             self.stack_offset1[self.quads[idx].result] = self.quads[idx].operand1 * self.size 
             idx += 1
+        self.stack_offset1["size"] = self.stack_offset
         self.code.append(f"addi $sp, $sp, -{self.stack_offset}")
         return idx
 
     def get_regs(self, operator):
         reg = self.get_reg(operator)
-        if operator in self.stack_offset1:
-            offset = self.stack_offset1.get(operator, 0)
+        if self.is_var(operator):
+            offset = self.get_offset(operator)
             self.emit(f"lw {reg}, {offset}($sp)")
         return reg
     
@@ -135,22 +157,31 @@ class MIPSGenerator:
             'call': self._gen_call,
             'load': self._gen_load,
             ':=:': self._addr_assign,
-            '[]': self._gen_address
+            '[]': self._gen_address,
+            'label': self._gen_label,
+            'Go': self._gen_goto
         }.get(op, self._gen_unknown)
         handler(op, arg1, arg2, res)
 
+    def _gen_label(self, op, label, _, __):
+        self.emit(f'{label}:')
+
+    def _gen_goto(self, op, label, _, __):
+        self.emit(f'j {label}')
+
     def _gen_load(self, op, addr, _, dest):
         dest_reg = self.get_regs(dest)
-        self.emit(f'add {dest_reg}, $sp')
+        self.emit(f'add {dest_reg}, {dest_reg}, $sp')
         self.emit(f"lw {dest_reg}, 0({dest_reg})")
 
     def _addr_assign(self, op, src, _, dest):
         dest_reg = self.get_regs(dest)
-        if isinstance(src, int):  # 如果是数字，则直接加载到寄存器中
-            self.emit(f"sw {dest_reg}, {src}")
+        self.emit(f'add {dest_reg}, {dest_reg}, $sp')
+        if isinstance(src, int): 
+            self.emit(f"sw {src}, 0({dest_reg})")
         else: 
             src_reg = self.get_regs(src)
-            self.emit(f"sw {dest_reg}, {src_reg}")
+            self.emit(f"sw {src_reg}, 0({dest_reg})")
             self.free_regs(src, src_reg)
         self.free_regs(dest, dest_reg) 
 
@@ -161,7 +192,7 @@ class MIPSGenerator:
         if self.has_reg(addr):
             self.emit(f'add, {dest_reg}, {src_reg}, {self.get_reg(addr)}')
         else:
-            offset = self.stack_offset1.get(addr, 0)
+            offset = self.get_offset(addr)
             self.emit(f'addi {dest_reg}, {src_reg}, {offset}')
         self.free_regs(src, src_reg)
 
@@ -173,7 +204,8 @@ class MIPSGenerator:
             src_reg = self.get_regs(src)
             self.emit(f"move {dest_reg}, {src_reg}")
             self.free_regs(src, src_reg)
-        self.free_regs(dest, dest_reg)
+        if dest in self.stack_offset1:
+            self.free_regs(dest, dest_reg)
 
     def _gen_lt(self, op, a, b, res):
         res_reg = self.get_regs(res)
@@ -288,6 +320,7 @@ class MIPSGenerator:
         self.emit("syscall")
         reg = self.get_regs(var)
         self.emit(f"move {reg}, $v0")
+        self.free_regs(var, reg)
 
     def _gen_output(self, op, val, _, __):
         reg = self.get_regs(val)
@@ -300,6 +333,8 @@ class MIPSGenerator:
         self.emit("syscall")
 
     def _gen_procedure(self, op, name, _, num):
+        self.stack_list.append(self.stack_offset1)
+        self.stack_offset1 = {}
         self.emit(f"{name}:")
         self.current_proc = name
         self.stack_offset = 0
@@ -317,6 +352,9 @@ class MIPSGenerator:
         self.emit("lw $ra, 4($sp)")
         self.emit("addu $sp, $sp, 8")
         self.emit("jr $ra")
+        #print(self.stack_offset1)
+        self.stack_offset1 = self.stack_list.pop()
+        #print(self.stack_offset1)
         self.current_proc = None
 
     def _gen_call(self, op, proc, _, __):

@@ -5,6 +5,7 @@
 |   DECLARE    |  1   |  1   |   j    |
 |   DECLARE    |  2   |  1   |  num   |
 |   DECLARE    |  3   |  20  |   a    |
+|      Go      | here | None |  None  |
 |  PROCEDURE   |  q   | None |   1    |
 |     get      |  0   |  1   |  num   |
 |   DECLARE    |  1   |  1   |   i    |
@@ -16,8 +17,9 @@
 |    WHILE     | None | None |  None  |
 |      <       |  i   | num  |   t1   |
 |      DO      |  t1  | None |  None  |
-|      +       |  i   |  1   |   t2   |
-|      -       | num  |  t2  |   t3   |
+|      -       | num  |  i   |   t2   |
+|      :=      |  t2  | None |   j    |
+|      +       |  j   |  1   |   t3   |
 |      :=      |  t3  | None |   j    |
 |      :=      |  1   | None |   k    |
 |    WHILE     | None | None |  None  |
@@ -63,6 +65,7 @@
 |      :=      | t28  | None |   i    |
 |   ENDWHILE   | None | None |  None  |
 | ENDPROCEDURE | None | None |  None  |
+|    label     | here | None |  None  |
 |      IN      | num  | None |  None  |
 |      :=      |  1   | None |   i    |
 |    WHILE     | None | None |  None  |

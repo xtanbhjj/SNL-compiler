@@ -110,6 +110,7 @@ class SemanticAnalyzer:
         self.type_table = {}       # 类型表，记录用户定义类型
         self.errors = []           # 收集错误信息
         self.quadruples = []
+        self.flag = True
         self.temp_var_count = 0
 
     def generate_temp_var(self):
@@ -179,6 +180,7 @@ class SemanticAnalyzer:
         _, program_head, declare_part, program_body = node
         self.visit(program_head)
         self.visit(declare_part)
+        self.emit_quad("label", "here", None, None)
         self.visit(program_body)
 
     # program_head
@@ -196,6 +198,9 @@ class SemanticAnalyzer:
         #print(self.type_table)
         self.visit(var_dec)   # 处理变量声明
         #print(self.current_scope.symbols)
+        if self.flag:
+            self.emit_quad("Go", "here", None, None)
+            self.flag = False
         self.visit(proc_dec)  # 处理过程声明
 
     def _resolve_type(self, type_name_node):
