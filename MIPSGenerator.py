@@ -377,6 +377,7 @@ class MIPSGenerator:
 if __name__ == '__main__':
     parser = SNLParser()
     parse_tree = parser.parse_file("./data/demo.txt")
+    print(parse_tree)
 
     if parse_tree:
         print("\n语法分析成功！")

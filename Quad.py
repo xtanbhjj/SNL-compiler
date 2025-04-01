@@ -27,12 +27,10 @@ class SymbolTable:
         self.symbols[name] = (symbol_type, self.offset, category)
         #print(symbol_type)
         length = 0
-        if symbol_type == "integer":
-            length = 1
-        elif symbol_type == "char":
-            length = 1
-        else:
+        if isinstance(symbol_type, RecType) or isinstance(symbol_type, ArrayType) or isinstance(symbol_type, ProcType):
             length = symbol_type.size
+        else:
+            length = 1
         self.offset += length
         return name, length, self.symbols[name][1]
 
@@ -95,7 +93,6 @@ class ArrayType:
         self.upper_bound = upper_bound
         self.element_type = element_type
         self.size = upper_bound - lower_bound + 1
-
     def __str__(self):
         return f"ARRAY [{self.lower_bound}..{self.upper_bound}] OF {self.element_type}"
 
@@ -108,6 +105,7 @@ class SemanticAnalyzer:
         self.current_scope = SymbolTable("global")
         self.scope_stack = [self.current_scope]  # 作用域堆栈
         self.type_table = {}       # 类型表，记录用户定义类型
+        self.type_stack = [self.type_table]
         self.errors = []           # 收集错误信息
         self.quadruples = []
         self.flag = True
@@ -121,13 +119,19 @@ class SemanticAnalyzer:
         self.quadruples.append(Quadruple(op, arg1, arg2, result))
 
     def lookup_type_table(self, name):
-        return self.type_table.get(name, None)
+        for scope in self.type_stack:
+            if name in scope:
+                return scope.get(name, None)
+        return None
 
     def enter_scope(self, name):
         new_scope = SymbolTable(name, parent=self.current_scope)
+        new_type = {}
         self.current_scope.children.append(new_scope)
         self.scope_stack.append(new_scope)
+        self.type_stack.append(new_type)
         self.current_scope = new_scope
+        self.type_table = new_type
 
     def exit_scope(self):
         # 退出作用域时打印符号表
@@ -135,7 +139,9 @@ class SemanticAnalyzer:
         for name, (type_, offset, category) in self.current_scope.symbols.items():
             print(f"  {name}: offset = {offset},类型={type_}, 类别={category}")
         self.scope_stack.pop()
+        self.type_stack.pop()
         self.current_scope = self.scope_stack[-1]
+        self.type_table = self.type_stack[-1]
 
     def analyze(self, ast):
         if ast is None:
@@ -245,6 +251,8 @@ class SemanticAnalyzer:
                     try:
                         lower_bound = int(lower_bound)
                         upper_bound = int(upper_bound)
+                        if lower_bound > upper_bound:
+                            self.error('lower bound must be less than upper bound')
                         return ArrayType(lower_bound, upper_bound, element_type)
                     except ValueError:
                         print(f"警告: 数组边界不是整数: {lower_bound}, {upper_bound}")
@@ -650,7 +658,8 @@ class SemanticAnalyzer:
 
     def visit_ReturnStm(self, node):
         _, exp = node  # 结构为 ('ReturnStm', Exp)
-        self._get_expression_value(exp)  # 根据需求检查返回类型
+        _, value = self._get_expression_value(exp)  # 根据需求检查返回类型
+        self.emit_quad('RETURN', value, None, None)
     
     # 在SemanticAnalyzer类中添加以下方法
 
@@ -725,7 +734,7 @@ class SemanticAnalyzer:
         var_info = self.current_scope.lookup(var_id)
         if not var_info:
             self.error(f"未定义的变量: {var_id}")
-            return None
+            return None, None
         base_type = var_info[0]
         # 处理数组下标或结构体访问
         current_type = base_type
@@ -736,7 +745,7 @@ class SemanticAnalyzer:
             if current_more[1][0] == 'Exp':  # 数组访问
                 if not isinstance(current_type, ArrayType):
                     self.error(f"{var_id} 不是数组类型")
-                    return None
+                    return None, None
                 index_type, value = self._get_expression_value(current_more[1])
                 if index_type != 'integer':
                     self.error("数组下标必须为整数")
@@ -754,12 +763,12 @@ class SemanticAnalyzer:
             else: 
                 if not isinstance(current_type, RecType):
                     self.error(f"{var_id} 不是记录类型")
-                    return None
+                    return None, None
                 field_name = current_more[1][1]  # FieldVar的ID
                 #print(current_type.fields)
                 if field_name not in current_type.fields:
                     self.error(f"字段 {field_name} 不存在于记录中")
-                    return None
+                    return None, None
                 value_pos = self.generate_temp_var()
                 self.emit_quad("[]", var_id, current_type.offset[field_name], value_pos)
                 current_type = current_type.fields[field_name]

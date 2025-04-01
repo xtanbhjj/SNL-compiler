@@ -13,9 +13,9 @@
 | 2  |     ;     |    SEMI   |
 | 3  |   array   |   ARRAY   |
 | 3  |     [     | LMIDPAREN |
-| 3  |     0     |    INTC   |
+| 3  |     1     |    INTC   |
 | 3  |     ..    | UNDERANGE |
-| 3  |     19    |    INTC   |
+| 3  |     20    |    INTC   |
 | 3  |     ]     | RMIDPAREN |
 | 3  |     of    |     OF    |
 | 3  |  integer  |  INTEGER  |
