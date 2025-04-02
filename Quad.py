@@ -753,6 +753,7 @@ class SemanticAnalyzer:
                 off_set = self.generate_temp_var()
                 value_pos = self.generate_temp_var()
                 self.emit_quad(":=", 4, None, cons_pos)
+                self.emit_quad("-", value, current_type.lower_bound, value)
                 self.emit_quad("*", value, cons_pos, off_set)
                 self.emit_quad("[]", var_id, off_set, value_pos)
                 self.emit_quad("load", value_pos, None, value_pos)
