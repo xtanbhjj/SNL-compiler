@@ -48,9 +48,9 @@ class ProcType:
         self.params = []  # 形参列表，每个元素为 (参数类型, 是否引用传递)
         self.size = 0
 
-    def add_param(self, param_type):
+    def add_param(self, param_type, is_ref):
         """添加形参到参数列表"""
-        self.params.append((param_type))
+        self.params.append((param_type, is_ref))
 
     def __repr__(self):
         params_str = ", ".join(
@@ -421,7 +421,7 @@ class SemanticAnalyzer:
         # 处理参数列表
         self.visit(param_list_node)
         for i in self.current_scope.symbols:
-            Proc.add_param(self.current_scope.symbols[i][0])
+            Proc.add_param(self.current_scope.symbols[i][0][0], self.current_scope.symbols[i][0][1])
         num = len(Proc.params)
         for i in range(len(self.quadruples) - 1, -1, -1):
             if self.quadruples[i].operator == 'PROCEDURE':
@@ -440,10 +440,10 @@ class SemanticAnalyzer:
         
         # 退出过程作用域
         self.exit_scope()
-        
+        self.emit_quad('ENDPROCEDURE', None, None, None)
         # 处理后续过程声明
         self.visit(proc_dec_more)
-        self.emit_quad('ENDPROCEDURE', None, None, None)
+        
 
     def visit_ProcDecMore(self, node):
         _, proc_dec = node
@@ -491,12 +491,12 @@ class SemanticAnalyzer:
         param_name = param_id
         
         # 添加参数到符号表
-        full_type = ("var " if is_ref else "") + str(param_type)
+        full_type = (param_type, is_ref)
         name, length, offset = self.current_scope.add_symbol(param_name, full_type, category='param')
         if not name:
             self.error(f"参数 '{param_name}' 重复定义")
         else:
-            self.emit_quad("get", offset, length, param_name)
+            self.emit_quad("get", is_ref, length, param_name)
         
         # 处理后续参数（传递附加信息）
         if fid_more and fid_more[1]:
@@ -564,7 +564,7 @@ class SemanticAnalyzer:
     def _handle_assignment(self, var_name, assignment_node):
         _, var_more, exp = assignment_node
         curr_type, var_location = self._get_variable_value(("Variable", var_name, var_more))
-        flag = self.check_string_in_nested_tuple(("Variable", var_name, var_more), "Exp")
+        flag = self.check_string_in_nested_tuple(("Variable", var_name, var_more), "Exp") or self.check_string_in_nested_tuple(("Variable", var_name, var_more), "FieldVar")
         if flag:
             self.quadruples.pop()
         exp_type, exp_value = self._get_expression_value(exp)
@@ -591,8 +591,9 @@ class SemanticAnalyzer:
             self.error(f" 参数数量不匹配：预期  {len(formal_params)} ，实际  {len(actual_params)}")
         else:
             for i, (formal, actual) in enumerate(zip(formal_params, actual_params)):
-                # 这里需要考虑值传递和引用传递
-                self.emit_quad('param', actual[1], None, None) # 传递参数值或地址
+                if formal[0] != actual[0]:
+                    self.error(f" 参数类型不匹配：预期  {formal[0]} ，实际  {actual[0]}")
+                self.emit_quad('param', actual[1], None, formal[1]) # 传递参数值或地址
 
         self.emit_quad('call', proc_name, None, None)
 
@@ -727,7 +728,9 @@ class SemanticAnalyzer:
         if isinstance(node[1], tuple):
             return self._get_expression_value(node[1])
         else:
-            return "integer", node[1] # 返回类型和值
+            tmp = self.generate_temp_var()
+            self.emit_quad(":=", node[1], None, tmp)
+            return "integer", tmp # 返回类型和值
     def _get_variable_value(self, variable_node):
         _, var_id, var_more = variable_node
         # 查找变量基础类型
@@ -735,12 +738,17 @@ class SemanticAnalyzer:
         if not var_info:
             self.error(f"未定义的变量: {var_id}")
             return None, None
-        base_type = var_info[0]
+        if isinstance(var_info[0], tuple):
+            base_type = var_info[0][0]
+        else:
+            base_type = var_info[0]
         # 处理数组下标或结构体访问
         current_type = base_type
         current_more = var_more
+        flag = False
         
         while current_more and current_more[1] is not None:
+            flag = True
             #print(var_id, current_more)
             if current_more[1][0] == 'Exp':  # 数组访问
                 if not isinstance(current_type, ArrayType):
@@ -756,7 +764,6 @@ class SemanticAnalyzer:
                 self.emit_quad("-", value, current_type.lower_bound, value)
                 self.emit_quad("*", value, cons_pos, off_set)
                 self.emit_quad("[]", var_id, off_set, value_pos)
-                self.emit_quad("load", value_pos, None, value_pos)
                 var_id = value_pos
                 current_type = current_type.element_type
                 current_more = None
@@ -770,13 +777,20 @@ class SemanticAnalyzer:
                 if field_name not in current_type.fields:
                     self.error(f"字段 {field_name} 不存在于记录中")
                     return None, None
+                cons_pos = self.generate_temp_var()
+                off_set = self.generate_temp_var()
                 value_pos = self.generate_temp_var()
-                self.emit_quad("[]", var_id, current_type.offset[field_name], value_pos)
+                self.emit_quad(":=", 4, None, cons_pos)
+                self.emit_quad(":=", current_type.offset[field_name], None, off_set)
+                self.emit_quad("*", off_set, cons_pos, off_set)
+                self.emit_quad("[]", var_id, off_set, value_pos)
                 current_type = current_type.fields[field_name]
                 var_id = value_pos
                 current_more = current_more[1][2]
                 print(current_more)
-        
+        if flag:
+            self.emit_quad("load", value_pos, None, value_pos)
+
         return current_type, var_id
 
     def visit_CmpOp(self, node):

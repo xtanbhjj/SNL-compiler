@@ -45,22 +45,33 @@ class MIPSGenerator:
     
     def get_offset(self, var):
         if var in self.stack_offset1:
-            return self.stack_offset1.get(var, 0)
+            off = self.stack_offset1.get(var, 0) 
+            if isinstance(off, tuple):
+                return off[0]
+            else:
+                return off
         else:
             offset = self.stack_offset1['size'] + 8
             for i in range(len(self.stack_list)-1, -1, -1):
                 if var in self.stack_list[i]:
-                    return offset + self.stack_list[i].get(var, 0)
+                    off = self.stack_list[i].get(var, 0)
+                    if isinstance(off, tuple):
+                        return offset + off[0]
+                    else:
+                        return offset + off
                 else:
                     offset += self.stack_list[i]['size'] + 8
     
     def is_var(self, var):
         if var in self.stack_offset1:
-            return True
+            if isinstance(self.stack_offset1[var], tuple):
+                return self.stack_offset1[var]
+            else:
+                return True
         else:
             for i in range(len(self.stack_list)-1, -1, -1):
                 if var in self.stack_list[i]:
-                    return True
+                    return self.stack_list[i].get(var, 0)
             return False
 
     def generate(self):
@@ -87,7 +98,7 @@ class MIPSGenerator:
                 idx += 1
                 for i in range(num):
                     op, arg1, arg2, res = self.quads[idx].operator, self.quads[idx].operand1, self.quads[idx].operand2, self.quads[idx].result
-                    off_set = self.stack_offset1.get(res, 0) # 获取变量的偏移量
+                    off_set = self.get_offset(res)
                     self.emit(f'sw $a{i}, {off_set}($sp)')
                     idx += 1
                 while(self.quads[idx].operator == 'DECLARE'):
@@ -97,9 +108,16 @@ class MIPSGenerator:
             elif self.quads[idx].operator == 'param':
                 num = 0
                 while self.quads[idx].operator == 'param':
-                    arg_reg = self.get_regs(self.quads[idx].operand1)
-                    self.emit(f'move $a{num}, {arg_reg}')
-                    self.free_regs(self.quads[idx].operand1, arg_reg)
+                    if not self.quads[idx].result:
+                        print("--------", self.quads[idx].operand1)
+                        arg_reg = self.get_regs(self.quads[idx].operand1)
+                        self.emit(f'move $a{num}, {arg_reg}')
+                        self.free_regs(self.quads[idx].operand1, arg_reg)
+                    else:
+                        offset = self.get_offset(self.quads[idx].operand1)
+                        self.emit(f'li $v0, {offset}')
+                        self.emit(f'add $v0, $sp, $v0')
+                        self.emit(f'move $a{num}, $v0')
                     num += 1
                     idx += 1
                 jk = idx
@@ -114,8 +132,11 @@ class MIPSGenerator:
     def _resolve_sp(self, idx):
         self.stack_offset = 0
         while self.quads[idx].operator in ('DECLARE', 'get'):
+            if self.quads[idx].operator == 'get' and self.quads[idx].operand1:
+                self.stack_offset1[self.quads[idx].result] = (self.stack_offset, True)
+            else:
+                self.stack_offset1[self.quads[idx].result] = self.stack_offset 
             self.stack_offset += self.quads[idx].operand2 * self.size
-            self.stack_offset1[self.quads[idx].result] = self.quads[idx].operand1 * self.size 
             idx += 1
         self.stack_offset1["size"] = self.stack_offset
         self.code.append(f"addi $sp, $sp, -{self.stack_offset}")
@@ -123,14 +144,26 @@ class MIPSGenerator:
 
     def get_regs(self, operator):
         reg = self.get_reg(operator)
-        if self.is_var(operator):
+        flag = self.is_var(operator)
+        print(flag, operator)
+        if isinstance(flag, tuple):
+            offset = flag[0]
+            self.emit(f"lw $v0, {offset}($sp)")
+            self.emit(f"lw {reg}, 0($v0)")
+        elif flag:
             offset = self.get_offset(operator)
             self.emit(f"lw {reg}, {offset}($sp)")
         return reg
     
     def free_regs(self, operator, reg):
-        if operator in self.stack_offset1:
-            offset = self.stack_offset1.get(operator, 0)
+        flag = self.is_var(operator)
+        if isinstance(flag, tuple):
+            offset = flag[0]
+            self.emit(f"lw $v0, {offset}($sp)")
+            self.emit(f"sw {reg}, 0($v0)")
+            self.free_reg(operator)
+        elif flag:
+            offset = self.get_offset(operator)
             self.emit(f"sw {reg}, {offset}($sp)")
             self.free_reg(operator)
         else:
@@ -144,6 +177,7 @@ class MIPSGenerator:
             '*': self._gen_mul,
             '/': self._gen_div,
             '<': self._gen_lt,
+            '=': self._gen_eq,
             'THEN': self._gen_then,
             'ELSE': self._gen_else,
             'ENDIF': self._gen_endif,
@@ -177,8 +211,9 @@ class MIPSGenerator:
     def _addr_assign(self, op, src, _, dest):
         dest_reg = self.get_regs(dest)
         self.emit(f'add {dest_reg}, {dest_reg}, $sp')
-        if isinstance(src, int): 
-            self.emit(f"sw {src}, 0({dest_reg})")
+        if isinstance(src, int):
+            self.emit(f"li $v0, {src}") 
+            self.emit(f"sw $v0, 0({dest_reg})")
         else: 
             src_reg = self.get_regs(src)
             self.emit(f"sw {src_reg}, 0({dest_reg})")
@@ -217,6 +252,15 @@ class MIPSGenerator:
             self.emit(f"slt {res_reg}, {a_reg}, {b_reg}")
             self.free_regs(b, b_reg)
         self.free_regs(a, a_reg)
+
+    def _gen_eq(self, op, a, b, res):
+        res_reg = self.get_regs(res)
+        a_reg = self.get_regs(a)
+        b_reg = self.get_regs(b)
+        self.emit(f"sub {res_reg}, {a_reg}, {b_reg}")
+        self.emit(f"slti {res_reg}, {res_reg}, 1")
+        self.free_regs(a, a_reg)
+        self.free_regs(b, b_reg)
 
     def _gen_add(self, op, a, b, res):
         res_reg = self.get_regs(res)
@@ -266,8 +310,6 @@ class MIPSGenerator:
     def _gen_else(self, op, _, __, ___):
         jump_index = self.emit(f"j endif_label")
         self.emit("nop")
-        # 将需要回填的跳转指令索引和目标标号压入栈
-        self.target_stack.append((jump_index, 'endif_label'))
         # 回填 THEN 语句的跳转目标
         if self.target_stack:
             then_jump_index, then_label = self.target_stack.pop()
@@ -277,6 +319,8 @@ class MIPSGenerator:
             self.label_count += 1
         else:
             raise RuntimeError(f"找不到与 ELSE 对应的 THEN 标签:")
+                # 将需要回填的跳转指令索引和目标标号压入栈
+        self.target_stack.append((jump_index, 'endif_label'))
 
     def _gen_endif(self, op, ___, _, __):
         if self.target_stack:
@@ -376,7 +420,7 @@ class MIPSGenerator:
 
 if __name__ == '__main__':
     parser = SNLParser()
-    parse_tree = parser.parse_file("./data/demo.txt")
+    parse_tree = parser.parse_file("./data/8-factorial.txt")
     print(parse_tree)
 
     if parse_tree:
