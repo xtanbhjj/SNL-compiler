@@ -145,7 +145,7 @@ class MIPSGenerator:
     def get_regs(self, operator):
         reg = self.get_reg(operator)
         flag = self.is_var(operator)
-        print(flag, operator)
+        #print(flag, operator)
         if isinstance(flag, tuple):
             offset = flag[0]
             self.emit(f"lw $v0, {offset}($sp)")
@@ -420,7 +420,7 @@ class MIPSGenerator:
 
 if __name__ == '__main__':
     parser = SNLParser()
-    parse_tree = parser.parse_file("./data/8-factorial.txt")
+    parse_tree = parser.parse_file("./data/demo.txt")
     print(parse_tree)
 
     if parse_tree:

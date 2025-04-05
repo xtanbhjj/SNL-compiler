@@ -760,9 +760,10 @@ class SemanticAnalyzer:
                 cons_pos = self.generate_temp_var()
                 off_set = self.generate_temp_var()
                 value_pos = self.generate_temp_var()
+                pos = self.generate_temp_var()
                 self.emit_quad(":=", 4, None, cons_pos)
-                self.emit_quad("-", value, current_type.lower_bound, value)
-                self.emit_quad("*", value, cons_pos, off_set)
+                self.emit_quad("-", value, current_type.lower_bound, pos)
+                self.emit_quad("*", pos, cons_pos, off_set)
                 self.emit_quad("[]", var_id, off_set, value_pos)
                 var_id = value_pos
                 current_type = current_type.element_type
@@ -821,7 +822,7 @@ class SemanticAnalyzer:
 
 if __name__ == '__main__':
     parser = SNLParser()
-    parse_tree = parser.parse_file("./data/demo.txt")
+    parse_tree = parser.parse_file("./data/7-bubbleSort.txt")
 
     if parse_tree:
         print("\n语法分析成功！")

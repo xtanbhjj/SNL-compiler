@@ -1,34 +1,40 @@
-{表达式的计算}
-{运行结果为15，7}
-program pp
-type t1=integer;
-     t2=t1;
-var  integer v1,v2,c;
-     t2  v3;
-     array [2..100] of integer  a;
-     record
-        array [1..10]  of  integer  b;
-    integer  v4;
-
-     end  r1;
-     char  m1,m2;
-
-procedure f(var t1  y);
-
-var  integer v11,v22;
-    array [2..100] of char  a1;
+program bubble
+var integer i,j,num;
+array[1..20] of integer a;
+procedure q(integer num);
+var integer i,j,k;
+integer t;
 begin
-     r1.v4:=1+3*(7-5);
-     y:= r1.v4;
+i:=1;
+j:=1;
+while i < num do
+j:=num-i;
+j:=j+1;
+k:=1;
+while k<j do
+if a[k+1] < a[k]
+then t:=a[k];
+a[k]:=a[k+1];
+a[k+1]:=t
+else t:=0
+fi;
+k:=k+1
+endwh;
+i:=i+1
+endwh
 end
-
 begin
-  a[(3+4)*5]:=5;
-  v1:=a[35];
-
-  if v1 < 10    then   write(v1+10)
-                else   write(v1-10)
-  fi;
-  f(v1);
-  write(v1)
+read(num);
+i:=1;
+while i<(num+1) do
+read(j);
+a[i]:=j;
+i:=i+1
+endwh;
+q(num);
+i:=1;
+while i<(num+1) do
+write(a[i]);
+i:=i+1
+endwh
 end.
