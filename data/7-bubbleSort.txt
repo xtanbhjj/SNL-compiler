@@ -6,7 +6,7 @@ var  integer  i,j,num;
 
 procedure  q(integer num);
 var  integer i,j,k;
-     integer t;
+     integer l;
 begin
   i:=1;
    while i < num do
@@ -16,10 +16,10 @@ begin
      while k<j  do
     	if a[k+1] < a[k]  
 then   
-	t:=a[k];
+	l:=a[k];
 		a[k]:=a[k+1];
-		a[k+1]:=t
-         else  t:=0
+		a[k+1]:=l
+         else  l:=0
          fi;   
      k:=k+1
      endwh;

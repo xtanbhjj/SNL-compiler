@@ -1,3 +1,5 @@
+import sys
+sys.path.append("../")
 from ply import lex
 from prettytable import PrettyTable
 

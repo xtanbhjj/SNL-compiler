@@ -4,239 +4,105 @@ newline: .asciiz "\n"
 .globl main
 main:
 li $sp, 0x7FFFFFFC
-addi $sp, $sp, -92
+addi $sp, $sp, -24
 j here
-q:
+p:
 subu $sp, $sp, 8
 sw $ra, 4($sp)
 sw $fp, 0($sp)
 move $fp, $sp
-addi $sp, $sp, -20
+addi $sp, $sp, -8
 sw $a0, 0($sp)
+sw $a1, 4($sp)
 li $t0, 1
-lw $t1, 4($sp)
-move $t1, $t0
-sw $t1, 4($sp)
-li $t1, 1
-lw $t0, 8($sp)
-move $t0, $t1
-sw $t0, 8($sp)
-label0:
-lw $t1, 4($sp)
 lw $t2, 0($sp)
-slt $t0, $t1, $t2
+add $t1, $t2, $t0
 sw $t2, 0($sp)
-sw $t1, 4($sp)
-beqz $t0, label5
-nop
 lw $t2, 0($sp)
-lw $t3, 4($sp)
-sub $t1, $t2, $t3
-sw $t3, 4($sp)
-sw $t2, 0($sp)
-lw $t2, 8($sp)
 move $t2, $t1
-sw $t2, 8($sp)
+sw $t2, 0($sp)
 li $t2, 1
-lw $t3, 8($sp)
-add $t1, $t3, $t2
-sw $t3, 8($sp)
-lw $t3, 8($sp)
-move $t3, $t1
-sw $t3, 8($sp)
-li $t3, 1
-lw $t1, 12($sp)
-move $t1, $t3
-sw $t1, 12($sp)
-label1:
-lw $t3, 12($sp)
-lw $t2, 8($sp)
-slt $t1, $t3, $t2
-sw $t2, 8($sp)
-sw $t3, 12($sp)
-beqz $t1, label4
-nop
-li $t3, 1
-lw $t4, 12($sp)
-add $t2, $t4, $t3
-sw $t4, 12($sp)
-li $t4, 4
-addi $t3, $t2, -1
-mul $t2, $t3, $t4
-addi $t4, $t2, 40
-add $t4, $t4, $sp
-lw $t4, 0($t4)
-li $t2, 4
-lw $t5, 12($sp)
-addi $t3, $t5, -1
-sw $t5, 12($sp)
-mul $t5, $t3, $t2
-addi $t2, $t5, 40
-add $t2, $t2, $sp
-lw $t2, 0($t2)
-slt $t5, $t4, $t2
-beqz $t5, label2
-nop
-li $t4, 4
-lw $t3, 12($sp)
-addi $t2, $t3, -1
-sw $t3, 12($sp)
-mul $t3, $t2, $t4
-addi $t4, $t3, 40
-add $t4, $t4, $sp
-lw $t4, 0($t4)
-lw $t3, 16($sp)
-move $t3, $t4
-sw $t3, 16($sp)
-li $t3, 4
-lw $t2, 12($sp)
-addi $t4, $t2, -1
-sw $t2, 12($sp)
-mul $t2, $t4, $t3
-addi $t3, $t2, 40
-li $t2, 1
-lw $t6, 12($sp)
-add $t4, $t6, $t2
-sw $t6, 12($sp)
-li $t6, 4
-addi $t2, $t4, -1
-mul $t4, $t2, $t6
-addi $t6, $t4, 40
-add $t6, $t6, $sp
-lw $t6, 0($t6)
-add $t3, $t3, $sp
-sw $t6, 0($t3)
-li $t3, 1
-lw $t4, 12($sp)
-add $t6, $t4, $t3
-sw $t4, 12($sp)
-li $t4, 4
-addi $t3, $t6, -1
-mul $t6, $t3, $t4
-addi $t4, $t6, 40
-add $t4, $t4, $sp
-lw $t6, 16($sp)
-sw $t6, 0($t4)
-sw $t6, 16($sp)
-j label3
-nop
-label2:
-li $t4, 0
-lw $t6, 16($sp)
-move $t6, $t4
-sw $t6, 16($sp)
-label3:
-li $t6, 1
-lw $t3, 12($sp)
-add $t4, $t3, $t6
-sw $t3, 12($sp)
-lw $t3, 12($sp)
-move $t3, $t4
-sw $t3, 12($sp)
-j label1
-nop
-label4:
-li $t3, 1
-lw $t6, 4($sp)
-add $t4, $t6, $t3
-sw $t6, 4($sp)
-lw $t6, 4($sp)
-move $t6, $t4
-sw $t6, 4($sp)
-j label0
-nop
-label5:
+lw $v0, 4($sp)
+lw $t0, 0($v0)
+add $t1, $t0, $t2
+lw $v0, 4($sp)
+sw $t0, 0($v0)
+lw $v0, 4($sp)
+lw $t0, 0($v0)
+move $t0, $t1
+lw $v0, 4($sp)
+sw $t0, 0($v0)
 move $sp, $fp
 lw $fp, 0($sp)
 lw $ra, 4($sp)
 addu $sp, $sp, 8
 jr $ra
 here:
-li $v0, 5
-syscall
-lw $t6, 8($sp)
-move $t6, $v0
-sw $t6, 8($sp)
-li $t6, 1
-lw $t4, 0($sp)
-move $t4, $t6
-sw $t4, 0($sp)
-label6:
-li $t4, 1
-lw $t3, 8($sp)
-add $t6, $t3, $t4
-sw $t3, 8($sp)
-lw $t4, 0($sp)
-slt $t3, $t4, $t6
-sw $t4, 0($sp)
-beqz $t3, label7
+li $t0, 10
+lw $t1, 0($sp)
+move $t1, $t0
+sw $t1, 0($sp)
+li $t1, 26
+lw $t0, 4($sp)
+move $t0, $t1
+sw $t0, 4($sp)
+li $t0, 1
+lw $t1, 8($sp)
+move $t1, $t0
+sw $t1, 8($sp)
+li $t1, 1
+lw $t2, 8($sp)
+add $t0, $t2, $t1
+sw $t2, 8($sp)
+lw $t2, 12($sp)
+move $t2, $t0
+sw $t2, 12($sp)
+lw $t2, 8($sp)
+lw $t0, 16($sp)
+move $t2, $t0
+sw $t0, 16($sp)
+sw $t2, 8($sp)
+li $t2, 5
+lw $t1, 12($sp)
+add $t0, $t1, $t2
+sw $t1, 12($sp)
+lw $t1, 16($sp)
+move $t1, $t0
+sw $t1, 16($sp)
+lw $t1, 8($sp)
+move $a0, $t1
+sw $t1, 8($sp)
+li $v0, 12
+add $v0, $sp, $v0
+move $a1, $v0
+jal p
+li $t1, 3
+li $t0, 4
+li $t2, 3
+add $t3, $t0, $t2
+mul $t0, $t1, $t3
+lw $t1, 4($sp)
+slt $t3, $t1, $t0
+sw $t1, 4($sp)
+beqz $t3, label0
 nop
-li $v0, 5
-syscall
-lw $t4, 4($sp)
-move $t4, $v0
-sw $t4, 4($sp)
-li $t4, 4
-lw $t2, 0($sp)
-addi $t6, $t2, -1
-sw $t2, 0($sp)
-mul $t2, $t6, $t4
-addi $t4, $t2, 12
-add $t4, $t4, $sp
+li $t1, 1
 lw $t2, 4($sp)
-sw $t2, 0($t4)
+add $t0, $t2, $t1
 sw $t2, 4($sp)
-li $t4, 1
-lw $t6, 0($sp)
-add $t2, $t6, $t4
-sw $t6, 0($sp)
-lw $t6, 0($sp)
-move $t6, $t2
-sw $t6, 0($sp)
-j label6
+lw $t2, 4($sp)
+move $t2, $t0
+sw $t2, 4($sp)
+j label1
 nop
-label7:
-lw $t6, 8($sp)
-move $a0, $t6
-sw $t6, 8($sp)
-jal q
-li $t6, 1
-lw $t2, 0($sp)
-move $t2, $t6
-sw $t2, 0($sp)
-label8:
-li $t2, 1
-lw $t4, 8($sp)
-add $t6, $t4, $t2
-sw $t4, 8($sp)
-lw $t2, 0($sp)
-slt $t4, $t2, $t6
-sw $t2, 0($sp)
-beqz $t4, label9
-nop
-li $t2, 4
-lw $t7, 0($sp)
-addi $t6, $t7, -1
-sw $t7, 0($sp)
-mul $t7, $t6, $t2
-addi $t2, $t7, 12
-add $t2, $t2, $sp
-lw $t2, 0($t2)
+label0:
+lw $t2, 20($sp)
 li $v0, 1
 move $a0, $t2
 syscall
 li $v0, 4
 la $a0, newline
 syscall
-li $t7, 1
-lw $t8, 0($sp)
-add $t6, $t8, $t7
-sw $t8, 0($sp)
-lw $t8, 0($sp)
-move $t8, $t6
-sw $t8, 0($sp)
-j label8
-nop
-label9:
+label1:
 li $v0, 10
 syscall

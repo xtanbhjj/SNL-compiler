@@ -1,3 +1,5 @@
+import sys
+sys.path.append("../")
 from parser import *
 from lexer import *
 
@@ -158,7 +160,7 @@ class SemanticAnalyzer:
             table = PrettyTable(field_names=["operator", "exp1", "exp2", "result"])
             for i in self.quadruples:
                 table.add_row([i.operator, i.operand1, i.operand2, i.result])
-            with open("./data/exps.txt", "w", encoding="utf-8") as w:
+            with open("../data/exps.txt", "w", encoding="utf-8") as w:
                 w.write(table.get_string())
 
     def error(self, message, lineno=None):

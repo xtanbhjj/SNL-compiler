@@ -1,4 +1,5 @@
-
+import sys
+sys.path.append("..")
 from lexer import *
 from Quad import *
 
@@ -127,7 +128,11 @@ class MIPSGenerator:
         # 结束程序
         self.code.append("li $v0, 10")
         self.code.append("syscall")
-        return '\n'.join(self.code)
+        mips_code = '\n'.join(self.code)
+        with open("../data/demo.mips", "w") as f:
+            for line in mips_code:
+                f.write(line)
+        return mips_code
 
     def _resolve_sp(self, idx):
         self.stack_offset = 0
@@ -239,6 +244,7 @@ class MIPSGenerator:
             src_reg = self.get_regs(src)
             self.emit(f"move {dest_reg}, {src_reg}")
             self.free_regs(src, src_reg)
+
         if dest in self.stack_offset1:
             self.free_regs(dest, dest_reg)
 
@@ -420,7 +426,7 @@ class MIPSGenerator:
 
 if __name__ == '__main__':
     parser = SNLParser()
-    parse_tree = parser.parse_file("./data/demo.txt")
+    parse_tree = parser.parse_file("../data/demo.txt")
     print(parse_tree)
 
     if parse_tree:
@@ -431,8 +437,5 @@ if __name__ == '__main__':
         mips_gen = MIPSGenerator(semantic_analyzer.quadruples)
         mips_code = mips_gen.generate()
         print(mips_code)
-        with open("./data/demo.mips", "w") as f:
-            for line in mips_code:
-                f.write(line)
     else:
         print("\n语法分析失败！")
