@@ -115,7 +115,7 @@ class SNLLexer:
 
             with open(output_file, "w", encoding="utf-8") as w:
                 w.write(table.get_string())
-            print(f"output is in {output_file}")
+            print("词法分析完成！ ")
             return tokens
         
         except FileNotFoundError:

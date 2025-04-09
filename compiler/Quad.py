@@ -155,12 +155,13 @@ class SemanticAnalyzer:
             for error in self.errors:
                 print(error)
         else:
+            print("\n全局符号表内容：")
             for name, (type_, offset, category) in self.current_scope.symbols.items():
                 print(f"  {name}: offset = {offset},类型={type_}, 类别={category}")
             table = PrettyTable(field_names=["operator", "exp1", "exp2", "result"])
             for i in self.quadruples:
                 table.add_row([i.operator, i.operand1, i.operand2, i.result])
-            with open("../data/exps.txt", "w", encoding="utf-8") as w:
+            with open("../result/中间代码.txt", "w", encoding="utf-8") as w:
                 w.write(table.get_string())
 
     def error(self, message, lineno=None):
@@ -430,8 +431,8 @@ class SemanticAnalyzer:
                 self.quadruples[i].result = num
                 break
         self.current_scope.parent.add_symbol(proc_name, Proc, 'PROCEDURE')
-        print(self.current_scope.symbols)
-        print(self.current_scope.parent.symbols)
+        #print(self.current_scope.symbols)
+        #print(self.current_scope.parent.symbols)
         
         # 处理过程内的声明部分
         self.visit(proc_dec_part)

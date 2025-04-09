@@ -91,7 +91,7 @@ class ConstantFolder:
         table = PrettyTable(field_names=["operator", "exp1", "exp2", "result"])
         for i in self.optimized_quads:
             table.add_row([i.operator, i.operand1, i.operand2, i.result])
-        with open("../data/exps2.txt", "w", encoding="utf-8") as w:
+        with open("../result/中间代码优化.txt", "w", encoding="utf-8") as w:
             w.write(table.get_string())
         return self.quad_list
 

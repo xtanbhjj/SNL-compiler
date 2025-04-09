@@ -4,33 +4,6 @@ from ply import yacc
 from lexer import SNLLexer
 from graphviz import Digraph
 
-def visualize_ast(ast, filename="syntax_tree"):
-    dot = Digraph(comment='Syntax Tree')
-    counter = [0]  # 用 list 包裹以便在递归中修改
-
-    def add_nodes(parent_id, node):
-        if isinstance(node, tuple):
-            label = str(node[0])
-            current_id = str(counter[0])
-            dot.node(current_id, label)
-            if parent_id is not None:
-                dot.edge(parent_id, current_id)
-            counter[0] += 1
-
-            for child in node[1:]:
-                if child is not None:
-                    add_nodes(current_id, child)
-        elif isinstance(node, str) or isinstance(node, int):
-            current_id = str(counter[0])
-            dot.node(current_id, str(node))
-            if parent_id is not None:
-                dot.edge(parent_id, current_id)
-            counter[0] += 1
-
-    add_nodes(None, ast)
-    dot.render(filename, format='pdf', cleanup=True)
-    print(f"Syntax tree saved to {filename}.pdf")
-
 class SNLParser:
     tokens = SNLLexer().tokens  # 继承词法分析器定义的 tokens
 
@@ -484,12 +457,12 @@ class SNLParser:
 
     # Error rule for syntax errors
     def p_error(self, p):
-        print(f"语法错误：在输入中遇到意外的 token '{p.value}' (类型: {p.type})，位于行 {p.lineno}")
+        print(f"词法语法错误：在输入中遇到意外的 token '{p.value}' (类型: {p.type})，位于行 {p.lineno}")
 
     def parse_file(self, file_path):
         with open(file_path, "r", encoding="utf-8") as f:
             data = f.read() 
-        tokens = self.lexer.analyze_file(file_path, "../data/token.txt") 
+        tokens = self.lexer.analyze_file(file_path, "../result/token.txt") 
         '''
         self.parse_tree = self.parser.parse(tokens, lexer=None)  # 传递字符串
         return self.parse_tree

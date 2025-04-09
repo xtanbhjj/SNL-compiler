@@ -110,7 +110,7 @@ class MIPSGenerator:
                 num = 0
                 while self.quads[idx].operator == 'param':
                     if not self.quads[idx].result:
-                        print("--------", self.quads[idx].operand1)
+                        #print("--------", self.quads[idx].operand1)
                         arg_reg = self.get_regs(self.quads[idx].operand1)
                         self.emit(f'move $a{num}, {arg_reg}')
                         self.free_regs(self.quads[idx].operand1, arg_reg)
@@ -128,8 +128,8 @@ class MIPSGenerator:
         # 结束程序
         self.code.append("li $v0, 10")
         self.code.append("syscall")
-        mips_code = '\n'.join(self.code)
-        with open("../data/demo.mips", "w") as f:
+        mips_code = '\n'.join(self.code) 
+        with open("../result/target.mips", "w") as f:
             for line in mips_code:
                 f.write(line)
         return mips_code
@@ -330,7 +330,7 @@ class MIPSGenerator:
 
     def _gen_endif(self, op, ___, _, __):
         if self.target_stack:
-            print(self.target_stack)
+            #print(self.target_stack)
             else_jump_index, else_label = self.target_stack.pop()
             self.code[else_jump_index] = self.code[else_jump_index].replace(else_label, f"label{self.label_count}")
         else:
