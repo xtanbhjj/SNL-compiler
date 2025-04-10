@@ -4,6 +4,19 @@ from ply import yacc
 from lexer import SNLLexer
 from graphviz import Digraph
 
+def format_syntax_tree(tree, indent=0):
+    output = ""
+    if isinstance(tree, tuple):
+        node_name = tree[0]
+        output += "  " * indent + f"({node_name}\n"
+        for child in tree[1:]:
+            if child is not None:
+                output += format_syntax_tree(child, indent + 1)
+        output += "  " * indent + ")\n"
+    elif isinstance(tree, str):
+        output += "  " * indent + f"{tree}\n"
+    return output
+
 class SNLParser:
     tokens = SNLLexer().tokens  # 继承词法分析器定义的 tokens
 
@@ -476,7 +489,9 @@ class SNLParser:
                 return None
 
         self.parse_tree = self.parser.parse(None, tokenfunc=token_func) # 传递 tokenfunc
-        #visualize_ast(self.parse_tree, "../data/ast.pdf")
+        tree = format_syntax_tree(self.parse_tree)
+        with open("../result/tree.txt", "w", encoding="utf-8") as f:
+            f.write(tree)
         return self.parse_tree
 
 def print_ast(node, indent=0):

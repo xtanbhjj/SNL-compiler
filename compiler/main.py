@@ -11,7 +11,7 @@ def main():
     #语法 + 词法
     parser = SNLParser()
     parse_tree = parser.parse_file(src_file)
-    if parse_tree:
+    if parse_tree: 
         print("\n语法分析成功！")
         #语意 + 中间代码
         semantic_analyzer = SemanticAnalyzer()

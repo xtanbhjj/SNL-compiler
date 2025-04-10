@@ -6,7 +6,7 @@ var integer s;
 procedure factor(integer n;var integer m);
 var integer w;
 begin
-if n=1:
+if n=1
 then m:=1
 else
   factor(n-1,w);
